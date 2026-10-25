@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "root": "/home/dev/example-project",
+  "summary": {
+    "error_count": 1,
+    "warning_count": 1,
+    "info_count": 1,
+    "passed_rule_count": 19,
+    "failed_rule_count": 2
+  },
+  "findings": [
+    {
+      "rule_id": "repo.license.missing",
+      "severity": "error",
+      "title": "LICENSE file not found",
+      "detail": "No LICENSE, LICENSE.md or LICENSE.txt was found at the repository root.",
+      "path": "LICENSE",
+      "evidence": "No license file matched the known names at the repository root.",
+      "suggestion": "Add a LICENSE file with the license chosen by the project maintainers."
+    },
+    {
+      "rule_id": "readme.install-not-detected",
+      "severity": "warning",
+      "title": "README install instructions not detected",
+      "detail": "No supported installation or run section was detected by the configured structural rule.",
+      "path": "README.md",
+      "evidence": "No recognized heading or minimum run example was found.",
+      "suggestion": "Add a short installation or run section with a verified command."
+    },
+    {
+      "rule_id": "link.external-not-checked",
+      "severity": "info",
+      "title": "External links were not checked",
+      "detail": "Offline mode does not verify external URL reachability.",
+      "path": "README.md",
+      "evidence": "3 external links were found and intentionally not requested.",
+      "suggestion": "Verify external links manually if they are release-critical."
+    }
+  ]
+}
