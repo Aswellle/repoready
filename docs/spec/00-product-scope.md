@@ -36,7 +36,7 @@ Essential files 存在性检查是门槛基础，不作为营销卖点。功能�
 - 规则注册表：每条规则有稳定 `rule_id`、severity 默认值与一句话 rationale（见 `01-architecture-rules.md` §2a）。
 - 输出 text 与 JSON：`--format text|json`、`--strict`、`--output PATH`；JSON 可被 CI 直接读取。
 - 退出码决策表冻结（见 `01-architecture-rules.md` §4）：`0` 达标；`1` 存在 error（或 strict 下存在 warning）；`2` CLI 参数/路径/配置/输出写入错误。
-- `--version`、`--help`。`--config`（TOML）在配置能力测试完成后于 Phase 3 加入。
+- `--version`、`--help`、`--config PATH`（TOML：`rules.disable` 与 `ignore.paths`；未知键、未注册 rule_id 或越界路径返回退出码 2）。
 - 没有 token、不上传代码、不安装服务、不自动改写仓库、不联网。
 
 **评分说明**：MVP 不实现分数、权重或 `--min-score`。评分只能作为未来候选由维护者重新决策；当前理由是避免用缺乏依据的数字营造仓库质量精确性。

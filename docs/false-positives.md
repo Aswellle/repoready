@@ -80,6 +80,19 @@
   评级，check-manifest 0.51 校验 sdist 文件完整性；本组规则保持零依赖、
   仅存在性检查，与其不互换也不重复其语义判断。
 
+## 配置语义（`--config`）
+
+- `rules.disable` 中的规则按"跳过"处理，不计入 passed/failed——CI 退出码语义
+  随之变化（禁用一条 error 规则可能让原本失败的检查变为通过），配置文件属于
+  版本控制内可审计的决策，建议与仓库一起提交。
+- `ignore.paths` 使匹配路径对**所有**检查不可见：忽略 `README.md` 会触发
+  `repo.readme.missing`，忽略 `pyproject.toml` 会跳过其字段检查——忽略即"等同
+  不存在"，不是"豁免"。
+- 忽略匹配作用于快照层（root、`.github`、`.github/workflows`、
+  `.github/ISSUE_TEMPLATE`、`docs` 顶层文件名）；更深层级当前不进入任何
+  规则的视野，配置深层路径无效果。
+- 配置中不存在阈值与输出格式键：无评分，输出格式由 CLI 参数控制。
+
 ## 计数与退出语义
 
 - 无 README 时，7 条 README 依赖规则（`readme.*`、`link.*`）跳过，

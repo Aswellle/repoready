@@ -171,6 +171,54 @@ class GoldenFixtureTests(unittest.TestCase):
             self.assertIn("[error] link.target.missing", out)
 
 
+class ConfigCliTests(unittest.TestCase):
+    def _config(self, tmp, text: str) -> str:
+        path = Path(tmp) / "reporead.toml"
+        path.write_text(text, encoding="utf-8")
+        return str(path)
+
+    def test_missing_config_file_exits_two(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            missing = Path(tmp) / "no-such.toml"
+            code, _, err = _run(["check", tmp, "--config", str(missing)])
+            self.assertEqual(code, 2)
+            self.assertIn("cannot read config", err)
+
+    def test_unknown_config_key_exits_two(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            config = self._config(tmp, "[thresholds]\nmin = 80\n")
+            code, _, err = _run(["check", tmp, "--config", config])
+            self.assertEqual(code, 2)
+            self.assertIn("thresholds", err)
+
+    def test_unknown_rule_id_in_config_exits_two(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            config = self._config(tmp, '[rules]\ndisable = ["not.a.rule"]\n')
+            code, _, err = _run(["check", tmp, "--config", config])
+            self.assertEqual(code, 2)
+            self.assertIn("not.a.rule", err)
+
+    def test_disable_takes_effect_on_golden_empty(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            config = self._config(
+                tmp,
+                "[rules]\n"
+                'disable = ["repo.templates.issues.missing", '
+                '"repo.templates.pr.missing"]\n',
+            )
+            code, out, _ = _run(["check", str(GOLDEN_EMPTY), "--config", config])
+            self.assertEqual(code, 1)
+            self.assertIn("rules evaluated: 10", out)
+            self.assertNotIn("repo.templates.issues.missing", out)
+
+    def test_ignore_makes_file_invisible(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            config = self._config(tmp, '[ignore]\npaths = ["README.md"]\n')
+            code, out, _ = _run(["check", str(GOLDEN_COMPLETE), "--config", config])
+            self.assertEqual(code, 1)
+            self.assertIn("[error] repo.readme.missing", out)
+
+
 class OutputFileTests(unittest.TestCase):
     def test_output_writes_report_file_and_keeps_stdout_empty(self):
         report_path = GOLDEN_COMPLETE.parent / "report.json"

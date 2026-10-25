@@ -7,7 +7,7 @@ from pathlib import Path
 
 from reporead.models import SEVERITIES
 from reporead.rules.context import build_context
-from reporead.rules import run_checks
+from reporead.rules import RULE_CHECKS, run_checks
 from reporead.rules import community_files as cf
 from reporead.rules import repository_files as rf
 from reporead.rules.registry import REGISTRY, get_spec
@@ -333,6 +333,18 @@ class EngineTests(unittest.TestCase):
         self.assertNotIn("repo.readme.missing", rule_ids)
         self.assertIn("readme.install-not-detected", rule_ids)
         self.assertIn("readme.usage-not-detected", rule_ids)
+
+    def test_rule_checks_cover_exactly_the_registry(self):
+        self.assertEqual(set(RULE_CHECKS), {spec.rule_id for spec in REGISTRY})
+
+    def test_disabled_rules_are_skipped_not_evaluated(self):
+        disabled = frozenset({"repo.readme.missing", "repo.license.missing"})
+        with tempfile.TemporaryDirectory() as tmp:
+            findings, evaluated = run_checks(Path(tmp), disabled_rules=disabled)
+        rule_ids = [f.rule_id for f in findings]
+        self.assertNotIn("repo.readme.missing", rule_ids)
+        self.assertNotIn("repo.license.missing", rule_ids)
+        self.assertEqual(evaluated, 10)
 
     def test_run_order_is_stable_across_calls(self):
         with tempfile.TemporaryDirectory() as tmp:

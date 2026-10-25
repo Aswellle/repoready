@@ -11,7 +11,7 @@
 - 必须实现：`reporead check [PATH]`、`--help`、`--version`、`--format text|json`、`--strict`、`--output PATH`。
 - 稳定退出码按 `01-architecture-rules.md` §4 决策表：`0` 无 error 且（strict 下）无 warning；`1` 存在 error，或 strict 模式下存在 warning；`2` CLI 参数、配置、路径访问或输出写入错误。
 - **不实现分数、`--min-score` 或复杂配置覆盖。** 文档中的这些能力视为后续候选项，避免用缺乏依据的评分表示仓库质量。
-- `--config` 可延后；若实现，必须有明确 TOML schema、未知键错误、路径忽略规则测试，不可接受执行代码的配置。
+- `--config PATH` 已实现：冻结 TOML schema（`[rules].disable`、`[ignore].paths`，见 `01-architecture-rules.md` §6）；未知键、类型错误、未注册 rule_id 或越界忽略路径返回退出码 2；不接受执行代码的配置。
 - `--output PATH` 不创建缺失父目录；写入失败返回 2，stderr 含目标路径与 OS 错误类别。
 - Markdown 链接规则 MVP 范围冻结为 README；扩展到其他 Markdown 属 `--config` 之后的候选项。
 - Text 和 JSON 必须由同一个内部 Report 模型生成。JSON 以 `report.schema.json` 为契约，示例见 `report-example.json`（须与 schema 及自身 summary 自洽）。

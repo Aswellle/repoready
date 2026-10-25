@@ -139,9 +139,22 @@ tests/
 - "fragment 检查"指 `path#fragment` 中 path 部分的文件存在性（可测；目标不存在记为 error 级 `link.target.missing`）；标题锚点匹配为 info 级 `link.anchor.not-found`，首版允许不覆盖全部 Markdown 标题插件规则，限制须写入 `docs/false-positives.md`。
 - 忽略 fenced code block 中的示例 URL/路径，避免大量误报。
 
-## 6. 配置文件（Phase 3）
+## 6. 配置文件（已冻结实现）
 
-采用 TOML。配置只能选择启用规则、阈值、忽略路径与输出格式，不接受可执行表达式/插件导入。未知字段报错；忽略模式不允许将 root 设为不受控的任意上级路径。`--config` 在配置能力测试完成后才加入 CLI。
+显式通过 `--config PATH` 加载；无自动发现、无默认文件名。TOML，冻结 schema：
+
+```toml
+[rules]
+disable = ["repo.templates.issues.missing", "repo.templates.pr.missing"]
+
+[ignore]
+paths = ["drafts/", "notes/*.md"]
+```
+
+- 只允许上述键；未知键、类型错误、未注册 rule_id、绝对路径或含 `..` 的忽略路径均报错并返回退出码 2。
+- 被禁用的规则按"跳过"处理：不计入 passed/failed 规则数；被忽略路径对检查完全不可见（等同文件不存在，可能因此触发 missing 类 finding）。
+- 忽略路径相对仓库 root，按目录前缀或 fnmatch 通配解释；作用于快照层（root、`.github`、`.github/workflows`、`.github/ISSUE_TEMPLATE`、`docs` 顶层）。
+- 不接受可执行表达式/插件导入；不提供阈值与输出格式键（无评分；输出格式属 CLI 参数 `--format`）。
 
 ## 7. 测试原则
 

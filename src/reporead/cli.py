@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 
 from . import __version__, report_json, report_text
+from .config import DEFAULT_CONFIG, ConfigError, load_config
 from .models import EXIT_USAGE, Report, decide_exit_code
 from .rules import run_checks
 from .scanner import ScannerError, resolve_root
@@ -54,6 +55,16 @@ def build_parser() -> argparse.ArgumentParser:
             "missing parent directories are not created"
         ),
     )
+    check.add_argument(
+        "--config",
+        metavar="PATH",
+        type=Path,
+        default=None,
+        help=(
+            "TOML config file with [rules].disable and "
+            "[ignore].paths; unknown keys or invalid values are errors"
+        ),
+    )
     return parser
 
 
@@ -65,13 +76,25 @@ def _write_stdout(text: str) -> None:
 
 
 def _run_check(args: argparse.Namespace) -> int:
+    config = DEFAULT_CONFIG
+    if args.config is not None:
+        try:
+            config = load_config(args.config)
+        except ConfigError as exc:
+            print(f"reporead: error: {exc}", file=sys.stderr)
+            return EXIT_USAGE
+
     try:
         root = resolve_root(args.path)
     except ScannerError as exc:
         print(f"reporead: error: {exc}", file=sys.stderr)
         return EXIT_USAGE
 
-    findings, evaluated = run_checks(root)
+    findings, evaluated = run_checks(
+        root,
+        disabled_rules=config.disabled_rules,
+        ignore_paths=config.ignore_paths,
+    )
     report = Report(root=str(root), findings=findings, evaluated_rule_count=evaluated)
     rendered = (
         report_text.render_text(report)
