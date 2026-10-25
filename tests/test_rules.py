@@ -7,6 +7,7 @@ from pathlib import Path
 
 from reporead.models import SEVERITIES
 from reporead.rules.context import build_context
+from reporead.rules import community_files as cf
 from reporead.rules import repository_files as rf
 from reporead.rules.registry import REGISTRY, get_spec
 
@@ -190,6 +191,118 @@ class EssentialRuleEdgeTests(unittest.TestCase):
             (workflows / "README.txt").write_text("notes\n", encoding="utf-8")
             findings = self._one("repo.ci.missing", root)
         self.assertEqual(len(findings), 1)
+
+
+# (rule_id, builder that creates ONLY this element in a fresh temp root)
+COMMUNITY_CASES = (
+    ("repo.contributing.missing",
+     lambda root: (root / "CONTRIBUTING.md").write_text(
+         "# contributing\n", encoding="utf-8")),
+    ("repo.security.missing",
+     lambda root: (root / "SECURITY.md").write_text(
+         "# security\n", encoding="utf-8")),
+    ("repo.coc.missing",
+     lambda root: (root / "CODE_OF_CONDUCT.md").write_text(
+         "# conduct\n", encoding="utf-8")),
+    ("repo.changelog.missing",
+     lambda root: (root / "CHANGELOG.md").write_text(
+         "# changelog\n", encoding="utf-8")),
+    ("repo.templates.issues.missing",
+     lambda root: (
+         (root / ".github" / "ISSUE_TEMPLATE").mkdir(parents=True),
+         (root / ".github" / "ISSUE_TEMPLATE" / "bug_report.md").write_text(
+             "steps\n", encoding="utf-8"),
+     )),
+    ("repo.templates.pr.missing",
+     lambda root: (
+         (root / ".github").mkdir(),
+         (root / ".github" / "PULL_REQUEST_TEMPLATE.md").write_text(
+             "summary\n", encoding="utf-8"),
+     )),
+)
+
+COMMUNITY_CHECKS = {
+    "repo.contributing.missing": cf.check_contributing,
+    "repo.security.missing": cf.check_security,
+    "repo.coc.missing": cf.check_coc,
+    "repo.changelog.missing": cf.check_changelog,
+    "repo.templates.issues.missing": cf.check_issue_templates,
+    "repo.templates.pr.missing": cf.check_pr_template,
+}
+
+
+class CommunityRuleTests(unittest.TestCase):
+    def _run_case(self, rule_id, builder):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            builder(root)
+            return COMMUNITY_CHECKS[rule_id](build_context(root)), root
+
+    def test_each_community_rule_passes_when_element_present(self):
+        for rule_id, builder in COMMUNITY_CASES:
+            with self.subTest(rule_id=rule_id):
+                findings, _ = self._run_case(rule_id, builder)
+                self.assertEqual(findings, [])
+
+    def test_each_community_rule_fails_on_empty_repo(self):
+        for rule_id, _ in COMMUNITY_CASES:
+            with self.subTest(rule_id=rule_id):
+                with tempfile.TemporaryDirectory() as tmp:
+                    findings = COMMUNITY_CHECKS[rule_id](build_context(Path(tmp)))
+                self.assertEqual(len(findings), 1)
+                finding = findings[0]
+                self.assertEqual(finding.rule_id, rule_id)
+                self.assertEqual(finding.severity, get_spec(rule_id).severity)
+                self.assertTrue(finding.title)
+                self.assertTrue(finding.detail)
+                self.assertTrue(finding.suggestion)
+
+
+class CommunityRuleEdgeTests(unittest.TestCase):
+    def _one(self, rule_id, root):
+        return COMMUNITY_CHECKS[rule_id](build_context(root))
+
+    def test_community_files_match_case_insensitive_variants(self):
+        for rule_id, name in (
+            ("repo.contributing.missing", "contributing.MD"),
+            ("repo.security.missing", "Security.md"),
+            ("repo.coc.missing", "code_of_conduct.MD"),
+        ):
+            with self.subTest(rule_id=rule_id, name=name):
+                with tempfile.TemporaryDirectory() as tmp:
+                    root = Path(tmp)
+                    (root / name).write_text("x\n", encoding="utf-8")
+                    self.assertEqual(self._one(rule_id, root), [])
+
+    def test_changelog_accepts_docs_releases_md_alternative(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            releases = root / "docs"
+            releases.mkdir()
+            (releases / "releases.md").write_text("# 0.1.0\n", encoding="utf-8")
+            self.assertEqual(self._one("repo.changelog.missing", root), [])
+
+    def test_issue_template_dir_must_contain_files(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / ".github" / "ISSUE_TEMPLATE").mkdir(parents=True)
+            findings = self._one("repo.templates.issues.missing", root)
+        self.assertEqual(len(findings), 1)
+
+    def test_pr_template_accepts_dir_form_under_github(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / ".github" / "PULL_REQUEST_TEMPLATE").mkdir(parents=True)
+            (root / ".github" / "PULL_REQUEST_TEMPLATE" / "default.md").write_text(
+                "summary\n", encoding="utf-8"
+            )
+            self.assertEqual(self._one("repo.templates.pr.missing", root), [])
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "pull_request_template.md").write_text(
+                "summary\n", encoding="utf-8"
+            )
+            self.assertEqual(self._one("repo.templates.pr.missing", root), [])
 
 
 if __name__ == "__main__":
