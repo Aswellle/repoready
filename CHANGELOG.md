@@ -4,7 +4,18 @@
 
 ## Unreleased
 
-尚未有新的变更条目。
+### Fixed
+
+- README 变体识别：`README.rst`/`README.txt`/`README.markdown` 不再误报缺失（dogfood：pip）。
+- License 变体识别：`LICENSE-<后缀>`/`licence-<后缀>`/`COPYING*`/`UNLICENSE*` 不再误报缺失（dogfood：ripgrep）。
+- CONTRIBUTING/SECURITY/CODE_OF_CONDUCT 认可 `.github/` 位置与 `CONDUCT.md` 变体（dogfood：pip、cobra）。
+- CHANGELOG 位置变体：`HISTORY.md`/`CHANGES.md(.rst)`/`NEWS.md(.rst)`/`RELEASES.md` 与 `docs/releases.md` 同等认可（dogfood：express、pip）。
+- 测试信号扩展：根级 `*_test.go`（Go）与 `src/test/` 嵌套（Java/Maven）不再误报缺失（dogfood：cobra、junit5）。
+- Markdown 标题识别支持 setext 形式（`标题` + `===`/`---`），锚点校验额外认可 HTML `name`/`id` 属性——修复 ripgrep 类仓库的 `readme.no-h1` 与 `link.anchor.not-found` 误报、纯文本 setext 格式 CHANGELOG 的 `meta.changelog.current-entry` 误报。
+
+### Added
+
+尚未有新的功能条目。
 
 ## 0.1.0 - 2026-10-26
 

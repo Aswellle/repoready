@@ -45,17 +45,17 @@ tests/
 
 ### Essential files
 
-- README.md 或 README（大小写适配）。
-- LICENSE / LICENSE.md / LICENSE.txt。
-- `.gitignore`。
+- README（大小写适配）：`README.md`/`README`/`README.rst`/`README.txt`/`README.markdown`。
+- LICENSE：`LICENSE(.md/.txt)`、`LICENSE-<后缀>`/`licence-<后缀>`（多许可拆分，如 ripgrep 的 `LICENSE-MIT`）、`COPYING(.txt/.lesser)`、`UNLICENSE(.txt)`。
+- `.gitignore`（精确小写，git 在大小写敏感文件系统上只认该名字）。
 - 至少一个依赖/项目清单：`pyproject.toml`、`package.json`、`Cargo.toml`、`go.mod` 等常见 manifest。
-- 测试目录或明确测试配置（不能仅凭文件名断言测试真的通过）。
+- 测试目录或明确测试配置（`tests/test/e2e/__tests__/src/test` 目录、Python/JS runner 配置文件、根级 `test_*.py`/`*_test.py`/`*_test.go`/`*.test.*`/`*.spec.*`；不能仅凭文件名断言测试真的通过）。
 - CI workflow（例如 `.github/workflows/*.yml`）。
 
 ### Community health
 
-- CONTRIBUTING.md、CODE_OF_CONDUCT.md、SECURITY.md。
-- CHANGELOG.md 或 `docs/releases.md` 作为可配置替代。
+- CONTRIBUTING.md、CODE_OF_CONDUCT.md、SECURITY.md：根目录或 `.github/`（GitHub 官方位置）；COC 认可 `CONDUCT.md` 变体。
+- CHANGELOG：根目录 `CHANGELOG.md`/`HISTORY.md`/`CHANGES.md(.rst)`/`NEWS.md(.rst)`/`RELEASES.md`，或 `docs/releases.md` 作为可配置替代。
 - `.github/ISSUE_TEMPLATE/`、`PULL_REQUEST_TEMPLATE.md`。
 
 ### README hygiene（MVP 仅检查 README）
@@ -136,7 +136,7 @@ tests/
 
 - 默认仅检查 README 内的相对路径和同仓库锚点；不请求网络。扩展到其他 Markdown 属 `--config` 之后的候选项，MVP 不做。
 - 处理 URL fragment、URL-encoded path、空格和 Windows separator。
-- "fragment 检查"指 `path#fragment` 中 path 部分的文件存在性（可测；目标不存在记为 error 级 `link.target.missing`）；标题锚点匹配为 info 级 `link.anchor.not-found`，首版允许不覆盖全部 Markdown 标题插件规则，限制须写入 `docs/false-positives.md`。
+- "fragment 检查"指 `path#fragment` 中 path 部分的文件存在性（可测；目标不存在记为 error 级 `link.target.missing`）；标题锚点匹配为 info 级 `link.anchor.not-found`。锚点来源：ATX 与 setext 标题的 GitHub slug（含重复编号），以及 `<h1-6>`/`<a>` 的 `name`/`id` 属性（GitHub 行为）。覆盖限制须写入 `docs/false-positives.md`。
 - 忽略 fenced code block 中的示例 URL/路径，避免大量误报。
 
 ## 6. 配置文件（已冻结实现）
