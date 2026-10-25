@@ -8,7 +8,8 @@ from pathlib import Path
 
 from . import __version__, report_json, report_text
 from .models import EXIT_USAGE, Report, decide_exit_code
-from .scanner import ScannerError, iter_files, resolve_root
+from .rules import run_checks
+from .scanner import ScannerError, resolve_root
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -66,13 +67,12 @@ def _write_stdout(text: str) -> None:
 def _run_check(args: argparse.Namespace) -> int:
     try:
         root = resolve_root(args.path)
-        # Phase 0: enumeration only. Rules and per-file reading arrive in Phase 1.
-        list(iter_files(root))
     except ScannerError as exc:
         print(f"reporead: error: {exc}", file=sys.stderr)
         return EXIT_USAGE
 
-    report = Report(root=str(root), findings=(), evaluated_rule_count=0)
+    findings, evaluated = run_checks(root)
+    report = Report(root=str(root), findings=findings, evaluated_rule_count=evaluated)
     rendered = (
         report_text.render_text(report)
         if args.format == "text"

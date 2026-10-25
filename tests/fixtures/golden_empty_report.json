@@ -1,0 +1,119 @@
+{
+  "summary": {
+    "error_count": 3,
+    "failed_rule_count": 10,
+    "info_count": 2,
+    "passed_rule_count": 2,
+    "warning_count": 7
+  },
+  "findings": [
+    {
+      "detail": "No CHANGELOG.md or docs/releases.md was found; release changes are not traceable.",
+      "evidence": "Checked the repository root for CHANGELOG.md (case-insensitive) and docs/releases.md; none found.",
+      "path": "CHANGELOG.md",
+      "rule_id": "repo.changelog.missing",
+      "severity": "warning",
+      "suggestion": "Add a CHANGELOG.md (or docs/releases.md) and record user-visible changes per release.",
+      "title": "CHANGELOG not found"
+    },
+    {
+      "detail": "No continuous integration workflow was detected; regressions have no automated gate.",
+      "evidence": "Checked .github/workflows for *.yml or *.yaml and root files .gitlab-ci.yml, azure-pipelines.yml, .travis.yml or .drone.yml; none found.",
+      "path": ".github/workflows",
+      "rule_id": "repo.ci.missing",
+      "severity": "warning",
+      "suggestion": "Add a CI workflow (for example .github/workflows/ci.yml) that runs your test suite.",
+      "title": "No CI workflow found"
+    },
+    {
+      "detail": "No CODE_OF_CONDUCT.md was found; community behaviour expectations are not stated.",
+      "evidence": "Checked the repository root for CODE_OF_CONDUCT.md (case-insensitive); none found.",
+      "path": "CODE_OF_CONDUCT.md",
+      "rule_id": "repo.coc.missing",
+      "severity": "warning",
+      "suggestion": "Add a CODE_OF_CONDUCT.md defining expected behaviour and an enforcement contact.",
+      "title": "CODE_OF_CONDUCT.md not found"
+    },
+    {
+      "detail": "No CONTRIBUTING.md was found; potential contributors have no guidance on how to help.",
+      "evidence": "Checked the repository root for CONTRIBUTING.md (case-insensitive); none found.",
+      "path": "CONTRIBUTING.md",
+      "rule_id": "repo.contributing.missing",
+      "severity": "warning",
+      "suggestion": "Add a CONTRIBUTING.md describing how to set up the project and submit changes.",
+      "title": "CONTRIBUTING.md not found"
+    },
+    {
+      "detail": "No .gitignore file was found; generated files and local secrets can be committed by accident.",
+      "evidence": "Checked the repository root for a file named exactly '.gitignore'; none found.",
+      "path": ".gitignore",
+      "rule_id": "repo.gitignore.missing",
+      "severity": "warning",
+      "suggestion": "Add a .gitignore covering build outputs, caches and local environment files.",
+      "title": ".gitignore not found"
+    },
+    {
+      "detail": "No LICENSE file was found at the repository root; without a license nobody can legally use or contribute to the code.",
+      "evidence": "Checked the repository root for LICENSE, LICENSE.md or LICENSE.txt (case-insensitive); none found.",
+      "path": "LICENSE",
+      "rule_id": "repo.license.missing",
+      "severity": "error",
+      "suggestion": "Add a LICENSE file with the license chosen by the project maintainers.",
+      "title": "LICENSE file not found"
+    },
+    {
+      "detail": "No known dependency or project manifest was found; dependencies and build tooling are not declared.",
+      "evidence": "Checked the repository root for pyproject.toml, setup.py, setup.cfg, requirements.txt, package.json, Cargo.toml, go.mod, pom.xml, build.gradle, build.gradle.kts, Gemfile or composer.json; none found.",
+      "path": null,
+      "rule_id": "repo.manifest.missing",
+      "severity": "error",
+      "suggestion": "Add the manifest that matches your ecosystem (for example pyproject.toml for Python or package.json for Node.js).",
+      "title": "No dependency manifest found"
+    },
+    {
+      "detail": "No README or README.md was found at the repository root, so the project has no front page for strangers.",
+      "evidence": "Checked the repository root for README.md or README (case-insensitive); none found.",
+      "path": "README.md",
+      "rule_id": "repo.readme.missing",
+      "severity": "error",
+      "suggestion": "Add a README.md that states what the project does, how to install it, and how to run it.",
+      "title": "README file not found"
+    },
+    {
+      "detail": "No SECURITY.md was found; reporters have no private channel for security issues.",
+      "evidence": "Checked the repository root for SECURITY.md (case-insensitive); none found.",
+      "path": "SECURITY.md",
+      "rule_id": "repo.security.missing",
+      "severity": "warning",
+      "suggestion": "Add a SECURITY.md explaining how to report vulnerabilities privately.",
+      "title": "SECURITY.md not found"
+    },
+    {
+      "detail": ".github/ISSUE_TEMPLATE/ contains no files; bug reports arrive unstructured.",
+      "evidence": "Checked .github/ISSUE_TEMPLATE/ for at least one template file; none found.",
+      "path": ".github/ISSUE_TEMPLATE",
+      "rule_id": "repo.templates.issues.missing",
+      "severity": "info",
+      "suggestion": "Add at least one issue template (for example bug_report.md) in .github/ISSUE_TEMPLATE/.",
+      "title": "No issue templates found"
+    },
+    {
+      "detail": "No PULL_REQUEST_TEMPLATE.md was found at the root or under .github; pull requests arrive unstructured.",
+      "evidence": "Checked the repository root and .github/ for PULL_REQUEST_TEMPLATE.md (case-insensitive) or a .github/PULL_REQUEST_TEMPLATE/ directory; none found.",
+      "path": ".github/PULL_REQUEST_TEMPLATE.md",
+      "rule_id": "repo.templates.pr.missing",
+      "severity": "info",
+      "suggestion": "Add a pull request template describing what to include in a PR.",
+      "title": "No pull request template found"
+    },
+    {
+      "detail": "No test directory or test configuration was detected; this does not prove tests exist elsewhere, but nothing signals runnable tests.",
+      "evidence": "Checked for directories 'tests' or 'test', files conftest.py, pytest.ini, tox.ini, noxfile.py, and root files matching test_*.py or *_test.py; none found.",
+      "path": null,
+      "rule_id": "repo.tests.missing",
+      "severity": "warning",
+      "suggestion": "Add a tests/ directory with at least one runnable test and wire it into your CI.",
+      "title": "No test directory or test configuration found"
+    }
+  ]
+}

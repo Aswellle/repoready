@@ -7,6 +7,7 @@ from pathlib import Path
 
 from reporead.models import SEVERITIES
 from reporead.rules.context import build_context
+from reporead.rules import run_checks
 from reporead.rules import community_files as cf
 from reporead.rules import repository_files as rf
 from reporead.rules.registry import REGISTRY, get_spec
@@ -303,6 +304,35 @@ class CommunityRuleEdgeTests(unittest.TestCase):
                 "summary\n", encoding="utf-8"
             )
             self.assertEqual(self._one("repo.templates.pr.missing", root), [])
+
+
+class EngineTests(unittest.TestCase):
+    FIXTURES = Path(__file__).resolve().parent / "fixtures"
+
+    def test_complete_golden_repo_passes(self):
+        findings, evaluated = run_checks(self.FIXTURES / "golden_complete_repo")
+        self.assertEqual(findings, ())
+        self.assertEqual(evaluated, 12)
+
+    def test_empty_root_reports_all_twelve_rules_with_registry_severities(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            findings, evaluated = run_checks(Path(tmp))
+        self.assertEqual(evaluated, 12)
+        self.assertEqual(len(findings), 12)
+        for finding in findings:
+            self.assertEqual(finding.severity, get_spec(finding.rule_id).severity)
+
+    def test_run_order_is_stable_across_calls(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            first = run_checks(Path(tmp))
+            second = run_checks(Path(tmp))
+        self.assertEqual(first, second)
+
+    def test_all_emitted_rule_ids_are_registered(self):
+        registered = {spec.rule_id for spec in REGISTRY}
+        with tempfile.TemporaryDirectory() as tmp:
+            findings, _ = run_checks(Path(tmp))
+        self.assertTrue({f.rule_id for f in findings} <= registered)
 
 
 if __name__ == "__main__":

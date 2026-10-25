@@ -11,7 +11,12 @@ src/reporead/
   cli.py              # argparse CLI
   models.py           # finding/report 模型、summary 计数、退出码决策
   scanner.py          # root 校验与只读枚举
-  rules/              # Phase 1 起的规则实现
+  rules/              # 存在性规则与引擎
+    __init__.py        # CHECKS 顺序与 run_checks 引擎
+    registry.py        # 规则注册表（与 §2a 表一致）与 make_finding
+    context.py         # ScanContext：root/.github/docs 顶层快照
+    repository_files.py # essential files 存在性规则
+    community_files.py  # community health 存在性规则
   report_text.py      # text 渲染（无 ANSI、确定性）
   report_json.py      # JSON 渲染（schema 契约、确定性）
   config.py           # --config 支持；Phase 3 才加入
