@@ -1,0 +1,171 @@
+"""CLI-level tests: exit codes, output formats, --output behavior."""
+
+import contextlib
+import io
+import json
+import os
+import tempfile
+import unittest
+from pathlib import Path
+
+import fixture_builders as fb
+from reporead import __version__
+from reporead.cli import build_parser, main
+
+
+def _run(argv):
+    stdout, stderr = io.StringIO(), io.StringIO()
+    with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+        code = main(argv)
+    return code, stdout.getvalue(), stderr.getvalue()
+
+
+class ParserTests(unittest.TestCase):
+    def test_version_exits_zero(self):
+        stdout = io.StringIO()
+        with contextlib.redirect_stdout(stdout):
+            with self.assertRaises(SystemExit) as ctx:
+                main(["--version"])
+        self.assertEqual(ctx.exception.code, 0)
+        self.assertIn(__version__, stdout.getvalue())
+
+    def test_missing_subcommand_exits_two(self):
+        with self.assertRaises(SystemExit) as ctx:
+            main([])
+        self.assertEqual(ctx.exception.code, 2)
+
+    def test_unknown_flag_exits_two(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaises(SystemExit) as ctx:
+                main(["check", "--bogus", tmp])
+            self.assertEqual(ctx.exception.code, 2)
+
+    def test_invalid_format_choice_exits_two(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaises(SystemExit) as ctx:
+                main(["check", tmp, "--format", "xml"])
+            self.assertEqual(ctx.exception.code, 2)
+
+    def test_parser_builds_with_expected_flags(self):
+        parser = build_parser()
+        args = parser.parse_args(["check", "some/path", "--format", "json",
+                                  "--strict", "--output", "out.json"])
+        self.assertEqual(args.path, "some/path")
+        self.assertEqual(args.format, "json")
+        self.assertTrue(args.strict)
+        self.assertEqual(str(args.output), "out.json")
+
+
+class CheckExitCodeTests(unittest.TestCase):
+    def test_empty_dir_exits_zero_with_text(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            code, out, _ = _run(["check", tmp])
+            self.assertEqual(code, 0)
+            self.assertIn("rules evaluated: 0 (0 passed, 0 failed)", out)
+            self.assertIn("no findings", out)
+
+    def test_empty_dir_json_is_schema_shaped(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            code, out, _ = _run(["check", tmp, "--format", "json"])
+            self.assertEqual(code, 0)
+            payload = json.loads(out)
+            self.assertEqual(payload["schema_version"], "1.0")
+            self.assertEqual(payload["findings"], [])
+            self.assertEqual(
+                payload["summary"],
+                {
+                    "error_count": 0,
+                    "warning_count": 0,
+                    "info_count": 0,
+                    "passed_rule_count": 0,
+                    "failed_rule_count": 0,
+                },
+            )
+
+    def test_strict_on_empty_dir_exits_zero(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            code, _, _ = _run(["check", tmp, "--strict"])
+            self.assertEqual(code, 0)
+
+    def test_nonexistent_path_exits_two(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            missing = str(Path(tmp) / "no-such-dir")
+            code, _, err = _run(["check", missing])
+            self.assertEqual(code, 2)
+            self.assertIn("error", err)
+
+    def test_file_as_root_exits_two(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "file.txt"
+            target.write_text("x", encoding="utf-8")
+            code, _, err = _run(["check", str(target)])
+            self.assertEqual(code, 2)
+            self.assertIn("not a directory", err)
+
+    def test_default_path_is_current_directory(self):
+        original_cwd = os.getcwd()
+        with tempfile.TemporaryDirectory() as tmp:
+            os.chdir(tmp)
+            try:
+                code, _, _ = _run(["check"])
+            finally:
+                os.chdir(original_cwd)
+            self.assertEqual(code, 0)
+
+    def test_scan_does_not_execute_target_code(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = fb.make_repo_with_never_execute_payload(Path(tmp))
+            code, _, _ = _run(["check", str(root)])
+            self.assertEqual(code, 0)
+            self.assertFalse((root / "EXECUTED_MARKER").exists())
+
+
+class OutputFileTests(unittest.TestCase):
+    def test_output_writes_report_file_and_keeps_stdout_empty(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            report_path = Path(tmp) / "report.json"
+            code, out, _ = _run(
+                ["check", tmp, "--format", "json", "--output", str(report_path)]
+            )
+            self.assertEqual(code, 0)
+            self.assertEqual(out, "")
+            payload = json.loads(report_path.read_text(encoding="utf-8"))
+            self.assertEqual(payload["schema_version"], "1.0")
+
+    def test_output_missing_parent_directory_exits_two(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            report_path = Path(tmp) / "missing-dir" / "report.json"
+            code, _, err = _run(
+                ["check", tmp, "--format", "json", "--output", str(report_path)]
+            )
+            self.assertEqual(code, 2)
+            self.assertIn(str(report_path), err)
+
+    def test_output_text_report_written_with_newline(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            report_path = Path(tmp) / "report.txt"
+            code, _, _ = _run(["check", tmp, "--output", str(report_path)])
+            self.assertEqual(code, 0)
+            content = report_path.read_text(encoding="utf-8")
+            self.assertTrue(content.endswith("\n"))
+            self.assertIn("no findings", content)
+
+
+class WindowsStylePathTests(unittest.TestCase):
+    def test_check_on_paths_with_spaces_and_cjk_exits_zero(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = fb.make_repo_with_windows_style_paths(Path(tmp))
+            code, _, _ = _run(["check", str(root)])
+            self.assertEqual(code, 0)
+
+    def test_check_on_missing_license_fixture_exits_zero(self):
+        # Phase 0 has no rules yet: an error fixture yields zero findings.
+        with tempfile.TemporaryDirectory() as tmp:
+            root = fb.make_repo_missing_license(Path(tmp))
+            code, out, _ = _run(["check", str(root), "--format", "json"])
+            self.assertEqual(code, 0)
+            self.assertEqual(json.loads(out)["findings"], [])
+
+
+if __name__ == "__main__":
+    unittest.main()
