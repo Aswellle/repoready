@@ -2,6 +2,10 @@
 
 本项目遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/) 约定。
 
+## Unreleased
+
+尚未有新的变更条目。
+
 ## 0.1.0 - 2026-10-26
 
 首个公开版本：离线、只读的仓库就绪度检查。

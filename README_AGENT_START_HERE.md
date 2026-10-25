@@ -14,13 +14,17 @@
 - `docs/spec/report.schema.json`：机器可读 JSON 报告契约。
 - `docs/spec/report-example.json`：与 schema 及自身 summary 自洽的示例报告。
 
-## 推荐操作
+## 当前状态（2026-10-26）
+
+Phase 0–4 已全部实施并通过验收，v0.1.0 已发布（tag 与 GitHub Release），CI 在 ubuntu/macos/windows × Python 3.11–3.14 上全绿。后续工作以 issue/使用反馈驱动，不再按阶段推进。
+
+## 给 Agent 的操作约定
 
 1. 确认 `git status --short --branch`，检查未提交修改。
-2. 先阅读 `docs/spec/IMPLEMENTATION_READINESS_REVIEW.md`，再读其余 spec 文档。
-3. 把 `docs/spec/03-agent-master-prompt.md` 的全部内容交给 Codex / Claude Code。
-4. 要求 Agent 每次只执行一个 Phase；Phase 0 完成后根据验收报告决定是否继续。
-5. 不授予自动创建远端仓库、发布包或推送 release 的权限。
+2. 遵守 `docs/AI_AGENT_WORKING_RULES.md`；改动前读 CONTRIBUTING.md 的验证门槛与新增规则六步清单。
+3. 任何新规则先登记 `docs/spec/01-architecture-rules.md` §2a 注册表；spec 文档是设计记录，改动须与代码同步。
+4. 每次改动保持测试全绿并如实报告实际结果；不引入网络、评分或目标代码执行。
+5. 不授予自动发布 PyPI、推送 release 的权限；外部动作须由维护者逐次授权。
 
 ## 目标实现结构
 
