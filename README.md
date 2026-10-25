@@ -16,15 +16,21 @@
 
 ## 安装与使用
 
-本项目**尚未发布到 PyPI**（发布名将使用 `repoready`，发布另行进行），当前从源码安装：
+**从 git 安装**（无需 PyPI，已实测）：
 
 ```bash
-git clone <本仓库>
+pip install git+https://github.com/Aswellle/repoready
+```
+
+或克隆后可编辑安装（适合开发）：
+
+```bash
+git clone https://github.com/Aswellle/repoready
 cd repoready
 pip install -e .
 ```
 
-无需安装时可用模块入口：`python -m repoready`。
+无需安装时可用模块入口：`python -m repoready`。PyPI 包（`repoready`）将另行发布。
 
 对任意仓库做检查（只读，不修改目标）：
 
