@@ -14,7 +14,9 @@
 
 请**私下**报告安全影响类问题（路径逃逸、资源耗尽、解析崩溃），不要在公开 issue 中附可利用样本。
 
-安全联系渠道将在仓库公开发布时在此处配置（维护者邮箱 / GitHub Security Advisory）。当前为未发布状态：如需报告，请通过仓库托管方建立联系后使用其私密渠道。
+安全联系渠道（维护者公开邮箱）：**wellerlee820@163.com**
+
+也可以在仓库公开后使用 GitHub 的 "Report a vulnerability"（Security Advisory 私密通道）报告。
 
 ## 处理承诺
 
