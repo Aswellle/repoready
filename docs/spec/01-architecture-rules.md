@@ -89,6 +89,7 @@ tests/
 | `readme.no-h1` | warning | readme | 2 | 未检测到 H1 标题 |
 | `readme.install-not-detected` | warning | readme | 2 | 未检测到安装/运行说明 |
 | `readme.usage-not-detected` | warning | readme | 2 | 未检测到使用示例 |
+| `readme.oversized` | warning | readme | 2 | README 超过 2 MiB 读取上限，仅分析前 2 MiB |
 | `link.target.missing` | error | links | 2 | README 本地相对链接/图片目标不存在 |
 | `link.anchor.not-found` | info | links | 2 | 锚点未匹配（提示级，不阻断） |
 | `link.external-not-checked` | info | links | 2 | 外链离线未检查，仅列出 |

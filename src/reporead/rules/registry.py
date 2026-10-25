@@ -58,6 +58,8 @@ REGISTRY: tuple[RuleSpec, ...] = (
              "no install/run instructions detected in README"),
     RuleSpec("readme.usage-not-detected", "warning", "readme", "2",
              "no usage example detected in README"),
+    RuleSpec("readme.oversized", "warning", "readme", "2",
+             "README exceeds the 2 MiB read limit"),
     RuleSpec("link.target.missing", "error", "links", "2",
              "README local link/image target does not exist"),
     RuleSpec("link.anchor.not-found", "info", "links", "2",

@@ -9,6 +9,7 @@ file contents.
 from __future__ import annotations
 
 import fnmatch
+from pathlib import Path
 
 from reporead.rules.registry import make_finding
 
@@ -213,3 +214,22 @@ CHECKS = (
     check_tests,
     check_ci,
 )
+
+
+def find_readme(ctx: ScanContext) -> Path | None:
+    """Return the README path if present and contained in root, else None.
+
+    Used by the README content rules. A README whose realpath escapes
+    the scan root (symlink) is treated as absent so content rules never
+    read outside the boundary.
+    """
+    for name in sorted(ctx.root_file_names):
+        if name.lower() in README_NAMES:
+            path = ctx.root / name
+            try:
+                resolved = path.resolve()
+                inside = resolved.is_relative_to(ctx.root.resolve())
+            except OSError:
+                return None
+            return path if inside else None
+    return None
