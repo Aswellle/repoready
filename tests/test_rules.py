@@ -312,15 +312,27 @@ class EngineTests(unittest.TestCase):
     def test_complete_golden_repo_passes(self):
         findings, evaluated = run_checks(self.FIXTURES / "golden_complete_repo")
         self.assertEqual(findings, ())
-        self.assertEqual(evaluated, 12)
+        self.assertEqual(evaluated, 19)
 
-    def test_empty_root_reports_all_twelve_rules_with_registry_severities(self):
+    def test_empty_root_skips_readme_dependent_rules(self):
         with tempfile.TemporaryDirectory() as tmp:
             findings, evaluated = run_checks(Path(tmp))
+        # 12 always-applicable rules; the 7 README-dependent rules skip.
         self.assertEqual(evaluated, 12)
         self.assertEqual(len(findings), 12)
         for finding in findings:
             self.assertEqual(finding.severity, get_spec(finding.rule_id).severity)
+
+    def test_readme_only_repo_evaluates_content_rules(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text("# T\n", encoding="utf-8")
+            findings, evaluated = run_checks(root)
+        self.assertEqual(evaluated, 19)
+        rule_ids = [f.rule_id for f in findings]
+        self.assertNotIn("repo.readme.missing", rule_ids)
+        self.assertIn("readme.install-not-detected", rule_ids)
+        self.assertIn("readme.usage-not-detected", rule_ids)
 
     def test_run_order_is_stable_across_calls(self):
         with tempfile.TemporaryDirectory() as tmp:

@@ -127,10 +127,10 @@ class CheckExitCodeTests(unittest.TestCase):
 
 
 class GoldenFixtureTests(unittest.TestCase):
-    def test_complete_repo_passes_all_twelve_rules(self):
+    def test_complete_repo_passes_all_nineteen_rules(self):
         code, out, _ = _run(["check", str(GOLDEN_COMPLETE)])
         self.assertEqual(code, 0)
-        self.assertIn("rules evaluated: 12 (12 passed, 0 failed)", out)
+        self.assertIn("rules evaluated: 19 (19 passed, 0 failed)", out)
         self.assertIn("no findings", out)
 
     def test_complete_repo_json_exit_zero(self):
@@ -159,6 +159,16 @@ class GoldenFixtureTests(unittest.TestCase):
         payload = json.loads(out)
         rule_ids = [f["rule_id"] for f in payload["findings"]]
         self.assertEqual(rule_ids, sorted(rule_ids))
+
+    def test_broken_readme_link_fails_check(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text(
+                "# T\n\nSee [guide](missing.md).\n", encoding="utf-8"
+            )
+            code, out, _ = _run(["check", str(root)])
+            self.assertEqual(code, 1)
+            self.assertIn("[error] link.target.missing", out)
 
 
 class OutputFileTests(unittest.TestCase):
