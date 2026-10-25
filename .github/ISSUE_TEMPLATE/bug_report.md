@@ -4,7 +4,7 @@ about: 检查结果错误、误报或工具异常
 labels: bug
 ---
 
-**版本**：`reporead --version` 的输出
+**版本**：`repoready --version` 的输出
 
 **平台**：操作系统 / Python 版本 / 文件系统大小写行为（如相关）
 

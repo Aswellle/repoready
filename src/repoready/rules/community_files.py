@@ -7,7 +7,7 @@ passed. Existence checks never open file contents.
 
 from __future__ import annotations
 
-from reporead.rules.registry import make_finding
+from repoready.rules.registry import make_finding
 
 from .context import ScanContext
 

@@ -4,8 +4,8 @@ import json
 import unittest
 from pathlib import Path
 
-from reporead import report_json, report_text
-from reporead.models import Finding, Report
+from repoready import report_json, report_text
+from repoready.models import Finding, Report
 
 SCHEMA_PATH = (
     Path(__file__).resolve().parents[1] / "docs" / "spec" / "report.schema.json"

@@ -14,7 +14,7 @@ from __future__ import annotations
 import re
 import urllib.parse
 
-from reporead.rules.registry import make_finding
+from repoready.rules.registry import make_finding
 
 from .context import ScanContext
 from .markdown_text import iter_unfenced_lines, read_capped

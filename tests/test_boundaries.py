@@ -25,8 +25,8 @@ NETWORK_MODULES = (
 
 _IMPORT_CODE = (
     "import sys;"
-    "import reporead, reporead.cli, reporead.models, reporead.report_json,"
-    " reporead.report_text, reporead.scanner;"
+    "import repoready, repoready.cli, repoready.models, repoready.report_json,"
+    " repoready.report_text, repoready.scanner;"
     "net = {'socket','http','http.client','urllib.request','ftplib',"
     "'smtplib','telnetlib','xmlrpc.client'};"
     "bad = sorted(net & set(sys.modules));"

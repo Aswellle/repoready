@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import re
 
-from reporead.rules.registry import make_finding
+from repoready.rules.registry import make_finding
 
 from .context import ScanContext
 from .markdown_text import README_SIZE_LIMIT, has_fenced_code, iter_unfenced_lines, read_capped

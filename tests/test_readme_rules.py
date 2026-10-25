@@ -4,9 +4,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from reporead.rules.context import build_context
-from reporead.rules.markdown_text import README_SIZE_LIMIT
-from reporead.rules import readme_quality as rq
+from repoready.rules.context import build_context
+from repoready.rules.markdown_text import README_SIZE_LIMIT
+from repoready.rules import readme_quality as rq
 
 
 def _run(check, files: dict[str, str | bytes]):

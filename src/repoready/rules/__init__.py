@@ -10,7 +10,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Callable
 
-from reporead.models import Finding
+from repoready.models import Finding
 
 from . import (
     community_files,

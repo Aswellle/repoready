@@ -3,18 +3,18 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "reporead"
-description = "RepoReady internal dev build: offline, read-only repository readiness checks."
+name = "repoready"
+description = "Offline, read-only repository readiness checks: evidence-based findings, no scores."
 requires-python = ">=3.11"
 dynamic = ["version"]
 license = "MIT"
 readme = "README.md"
 
 [project.scripts]
-reporead = "reporead.cli:main"
+repoready = "repoready.cli:main"
 
 [tool.setuptools.dynamic]
-version = { attr = "reporead.__version__" }
+version = { attr = "repoready.__version__" }
 
 [tool.setuptools.packages.find]
 where = ["src"]

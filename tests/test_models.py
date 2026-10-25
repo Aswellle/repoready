@@ -2,7 +2,7 @@
 
 import unittest
 
-from reporead.models import (
+from repoready.models import (
     EXIT_CHECK_FAILED,
     EXIT_OK,
     Finding,

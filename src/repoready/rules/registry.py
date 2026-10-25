@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from reporead.models import Finding
+from repoready.models import Finding
 
 
 class RegistryError(LookupError):

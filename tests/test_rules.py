@@ -5,12 +5,12 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from reporead.models import SEVERITIES
-from reporead.rules.context import build_context
-from reporead.rules import RULE_CHECKS, run_checks
-from reporead.rules import community_files as cf
-from reporead.rules import repository_files as rf
-from reporead.rules.registry import REGISTRY, get_spec
+from repoready.models import SEVERITIES
+from repoready.rules.context import build_context
+from repoready.rules import RULE_CHECKS, run_checks
+from repoready.rules import community_files as cf
+from repoready.rules import repository_files as rf
+from repoready.rules.registry import REGISTRY, get_spec
 
 DOCS_TABLE = (
     Path(__file__).resolve().parents[1]

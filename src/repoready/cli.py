@@ -1,4 +1,4 @@
-"""Argparse CLI for the reporead package (RepoReady internal dev build)."""
+"""Argparse CLI for the repoready package (RepoReady)."""
 
 from __future__ import annotations
 
@@ -15,14 +15,13 @@ from .scanner import ScannerError, resolve_root
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="reporead",
+        prog="repoready",
         description=(
-            "Offline, read-only repository readiness checks "
-            "(RepoReady internal dev build)."
+            "Offline, read-only repository readiness checks (RepoReady)."
         ),
     )
     parser.add_argument(
-        "--version", action="version", version=f"reporead {__version__}"
+        "--version", action="version", version=f"repoready {__version__}"
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
     check = subparsers.add_parser(
@@ -81,13 +80,13 @@ def _run_check(args: argparse.Namespace) -> int:
         try:
             config = load_config(args.config)
         except ConfigError as exc:
-            print(f"reporead: error: {exc}", file=sys.stderr)
+            print(f"repoready: error: {exc}", file=sys.stderr)
             return EXIT_USAGE
 
     try:
         root = resolve_root(args.path)
     except ScannerError as exc:
-        print(f"reporead: error: {exc}", file=sys.stderr)
+        print(f"repoready: error: {exc}", file=sys.stderr)
         return EXIT_USAGE
 
     findings, evaluated = run_checks(
@@ -107,7 +106,7 @@ def _run_check(args: argparse.Namespace) -> int:
             args.output.write_text(rendered, encoding="utf-8", newline="\n")
         except OSError as exc:
             print(
-                f"reporead: error: cannot write report to "
+                f"repoready: error: cannot write report to "
                 f"'{args.output}': {exc.strerror or exc}",
                 file=sys.stderr,
             )

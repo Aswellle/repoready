@@ -9,8 +9,8 @@ import unittest
 from pathlib import Path
 
 import fixture_builders as fb
-from reporead import __version__
-from reporead.cli import build_parser, main
+from repoready import __version__
+from repoready.cli import build_parser, main
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 GOLDEN_COMPLETE = FIXTURES / "golden_complete_repo"
@@ -173,7 +173,7 @@ class GoldenFixtureTests(unittest.TestCase):
 
 class ConfigCliTests(unittest.TestCase):
     def _config(self, tmp, text: str) -> str:
-        path = Path(tmp) / "reporead.toml"
+        path = Path(tmp) / "repoready.toml"
         path.write_text(text, encoding="utf-8")
         return str(path)
 

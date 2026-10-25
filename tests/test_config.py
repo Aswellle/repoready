@@ -4,13 +4,13 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from reporead.config import Config, ConfigError, load_config
-from reporead.rules.context import build_context
+from repoready.config import Config, ConfigError, load_config
+from repoready.rules.context import build_context
 
 
 def _load(text: str) -> Config:
     with tempfile.TemporaryDirectory() as tmp:
-        path = Path(tmp) / "reporead.toml"
+        path = Path(tmp) / "repoready.toml"
         path.write_text(text, encoding="utf-8")
         return load_config(path)
 

@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 import fixture_builders as fb
-from reporead.scanner import ScannerError, iter_files, resolve_root
+from repoready.scanner import ScannerError, iter_files, resolve_root
 
 
 class ResolveRootTests(unittest.TestCase):

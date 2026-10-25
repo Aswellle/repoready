@@ -16,7 +16,7 @@ import json
 import re
 import tomllib
 
-from reporead.rules.registry import make_finding
+from repoready.rules.registry import make_finding
 
 from .context import ScanContext
 from .markdown_text import README_SIZE_LIMIT, iter_unfenced_lines, read_capped

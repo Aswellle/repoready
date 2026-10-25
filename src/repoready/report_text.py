@@ -8,7 +8,7 @@ from .models import Report
 
 def render_text(report: Report) -> str:
     lines = [
-        f"reporead {__version__} - repository readiness check (RepoReady internal dev build)",
+        f"repoready {__version__} - repository readiness check",
         f"root: {report.root}",
     ]
     s = report.summary

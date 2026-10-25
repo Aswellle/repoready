@@ -1,4 +1,4 @@
-"""Module entry point: python -m reporead."""
+"""Module entry point: python -m repoready."""
 
 import sys
 

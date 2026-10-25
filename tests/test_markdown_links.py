@@ -4,8 +4,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from reporead.rules.context import build_context
-from reporead.rules import markdown_links as ml
+from repoready.rules.context import build_context
+from repoready.rules import markdown_links as ml
 
 
 def _run(check, files: dict[str, str | None]):

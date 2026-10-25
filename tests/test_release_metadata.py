@@ -5,8 +5,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from reporead.rules.context import build_context
-from reporead.rules import release_metadata as rm
+from repoready.rules.context import build_context
+from repoready.rules import release_metadata as rm
 
 
 def _run(check, files: dict[str, str | None]):

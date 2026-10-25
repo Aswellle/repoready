@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from reporead.rules.markdown_text import (
+from repoready.rules.markdown_text import (
     README_SIZE_LIMIT,
     has_fenced_code,
     iter_unfenced_lines,
