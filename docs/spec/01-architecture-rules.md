@@ -49,7 +49,7 @@ tests/
 - LICENSE：`LICENSE(.md/.txt)`、`LICENSE-<后缀>`/`licence-<后缀>`（多许可拆分，如 ripgrep 的 `LICENSE-MIT`）、`COPYING(.txt/.lesser)`、`UNLICENSE(.txt)`。
 - `.gitignore`（精确小写，git 在大小写敏感文件系统上只认该名字）。
 - 至少一个依赖/项目清单：`pyproject.toml`、`package.json`、`Cargo.toml`、`go.mod` 等常见 manifest。
-- 测试目录或明确测试配置（`tests/test/e2e/__tests__/src/test` 目录、Python/JS runner 配置文件、根级 `test_*.py`/`*_test.py`/`*_test.go`/`*.test.*`/`*.spec.*`；不能仅凭文件名断言测试真的通过）。
+- 测试目录或明确测试配置（`tests/test/e2e/__tests__/src/test` 与第二层 `<模块>/src/test` 目录、Python/JS runner 配置文件、根级 `test_*.py`/`*_test.py`/`*_test.go`/`*.test.*`/`*.spec.*`；不能仅凭文件名断言测试真的通过）。
 - CI workflow（例如 `.github/workflows/*.yml`）。
 
 ### Community health

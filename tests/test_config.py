@@ -133,6 +133,17 @@ class ContextIgnoreTests(unittest.TestCase):
                 {e.name for e in ctx.root_entries}, {"README.md", "drafts", "docs"}
             )
 
+    def test_ignore_hides_nested_src_test_probe(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            module = root / "mod" / "src" / "test"
+            module.mkdir(parents=True)
+            self.assertTrue(build_context(root).has_nested_src_test_dir)
+            hidden = build_context(root, ignore_paths=("mod/",))
+            self.assertFalse(hidden.has_nested_src_test_dir)
+            target_hidden = build_context(root, ignore_paths=("mod/src/test",))
+            self.assertFalse(target_hidden.has_nested_src_test_dir)
+
 
 if __name__ == "__main__":
     unittest.main()

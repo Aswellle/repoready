@@ -209,7 +209,11 @@ def check_gitignore(ctx: ScanContext):
 
 
 def check_tests(ctx: ScanContext):
-    if ctx.root_dirs_lower & TEST_DIRS or ctx.has_src_test_dir:
+    if (
+        ctx.root_dirs_lower & TEST_DIRS
+        or ctx.has_src_test_dir
+        or ctx.has_nested_src_test_dir
+    ):
         return []
     if ctx.root_files_lower & TEST_CONFIG_FILES:
         return []
@@ -229,7 +233,8 @@ def check_tests(ctx: ScanContext):
             path=None,
             evidence=(
                 "Checked for directories 'tests', 'test', 'e2e', "
-                "'__tests__' or 'src/test', Python files conftest.py, "
+                "'__tests__', 'src/test' and second-level '<module>/src/test'"
+                " (multi-module builds), Python files conftest.py, "
                 "pytest.ini, tox.ini, noxfile.py, JS/TS runner configs "
                 "such as playwright/vitest/jest/cypress configs, and root "
                 "files matching test_*.py, *_test.py, *_test.go, *.test.* "

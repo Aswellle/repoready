@@ -6,6 +6,7 @@
 
 ### Fixed
 
+- 测试信号扩展：第二层 `<模块>/src/test`（junit5 型多模块仓库）不再误报缺失；生成/ vendored 目录（node_modules 等）不参与探测。
 - README 变体识别：`README.rst`/`README.txt`/`README.markdown` 不再误报缺失（dogfood：pip）。
 - License 变体识别：`LICENSE-<后缀>`/`licence-<后缀>`/`COPYING*`/`UNLICENSE*` 不再误报缺失（dogfood：ripgrep）。
 - CONTRIBUTING/SECURITY/CODE_OF_CONDUCT 认可 `.github/` 位置与 `CONDUCT.md` 变体（dogfood：pip、cobra）。

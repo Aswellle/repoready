@@ -8,8 +8,9 @@ absent (symlinks are not followed, per the architecture rules).
 Entries can be hidden with ignore paths (from --config): a pattern
 matches a relative POSIX path as a directory prefix or via fnmatch.
 Ignored entries are invisible to every check, exactly like absent
-files. Ignore filtering applies to the listed levels only (root,
-.github, .github/workflows, .github/ISSUE_TEMPLATE, docs).
+files. Ignore filtering applies to the listed levels (root, .github,
+.github/workflows, .github/ISSUE_TEMPLATE, docs) and to the nested
+<dir>/src/test existence probe.
 """
 
 from __future__ import annotations
@@ -18,6 +19,8 @@ import fnmatch
 import os
 from dataclasses import dataclass
 from pathlib import Path
+
+from ..scanner import DEFAULT_SKIP_DIRS
 
 
 @dataclass(frozen=True)
@@ -36,6 +39,7 @@ class ScanContext:
     issue_template_files: tuple[str, ...]
     docs_entries: tuple[Entry, ...]
     has_src_test_dir: bool
+    has_nested_src_test_dir: bool
 
     @property
     def root_files_lower(self) -> frozenset[str]:
@@ -150,6 +154,14 @@ def build_context(
         has_src_test_dir = any(
             e.name.lower() == "test" and e.is_dir for e in src_entries
         )
+    # Multi-module builds (junit5 style): <module>/src/test one level down.
+    # Existence probe only; generated/vendored dirs are never probed.
+    has_nested_src_test_dir = any(
+        not _is_ignored(f"{entry.name}/src/test", ignore_paths)
+        and (root / entry.name / "src" / "test").is_dir()
+        for entry in root_entries
+        if entry.is_dir and entry.name not in DEFAULT_SKIP_DIRS
+    )
     return ScanContext(
         root=root,
         root_entries=root_entries,
@@ -159,4 +171,5 @@ def build_context(
         issue_template_files=issue_template_files,
         docs_entries=docs_entries,
         has_src_test_dir=has_src_test_dir,
+        has_nested_src_test_dir=has_nested_src_test_dir,
     )

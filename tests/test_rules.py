@@ -232,6 +232,21 @@ class EssentialRuleEdgeTests(unittest.TestCase):
             (root / "src").mkdir()
             self.assertEqual(len(self._one("repo.tests.missing", root)), 1)
 
+    def test_tests_rule_accepts_module_level_src_test(self):
+        # junit5 shape: <module>/src/test one level below the root.
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "junit-jupiter-api" / "src" / "test").mkdir(parents=True)
+            self.assertEqual(self._one("repo.tests.missing", root), [])
+
+    def test_tests_rule_does_not_probe_generated_dirs(self):
+        # Generated/vendored dirs from the frozen skip list are never
+        # probed for <dir>/src/test.
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "node_modules" / "src" / "test").mkdir(parents=True)
+            self.assertEqual(len(self._one("repo.tests.missing", root)), 1)
+
     def test_ci_rule_accepts_github_yaml_and_root_ci_files(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

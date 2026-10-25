@@ -20,13 +20,15 @@
   未收录的生态（如 `cabal.project`、`deno.json`）会误报缺失；**只查根
   目录**，manifest 仅存在于子目录的 monorepo 会误报缺失。
 - 测试规则识别冻结信号集：目录 `tests/`、`test/`、`e2e/`、`__tests__/`
-  与 `src/test/`（Java/Maven 惯例，第二层）；Python 配置 conftest.py、
-  pytest.ini、tox.ini、noxfile.py；JS/TS runner 配置
+  与 `src/test/`（Java/Maven 惯例）；第二层 `<模块>/src/test/`（junit5 型
+  多模块仓库，仅做存在性探测，生成/ vendored 目录不探测）；Python 配置
+  conftest.py、pytest.ini、tox.ini、noxfile.py；JS/TS runner 配置
   （playwright/vitest/jest/cypress/karma 常见文件名）；根目录文件名
   `test_*.py`、`*_test.py`、`*_test.go`（Go 惯例）、`*.test.*`、
-  `*.spec.*`。测试只存在于其他更深层级（如 `packages/*/src/**/*.spec.ts`
-  且无任何根级信号）时会误报缺失——该规则的视野是根目录、冻结目录名与
-  `src/test`，不做递归内容扫描。文件存在不证明测试能通过。
+  `*.spec.*`。测试只存在于其他更深层级（如 `packages/*/test` 或
+  `packages/*/src/**/*.spec.ts` 且无任何根级信号）时会误报缺失——该规则
+  的视野是根目录、冻结目录名、`src/test` 与 `<模块>/src/test`，不做递归
+  内容扫描。文件存在不证明测试能通过。
 - CI 识别 GitHub Actions（`.github/workflows/*.yml|yaml`）与 4 种根级
   配置（`.gitlab-ci.yml` 等）；其他 CI 系统（Jenkinsfile、circleci 目录）
   会误报缺失。
