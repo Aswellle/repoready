@@ -172,6 +172,33 @@ class EssentialRuleEdgeTests(unittest.TestCase):
             (root / "test_app.py").write_text("", encoding="utf-8")
             self.assertEqual(self._one("repo.tests.missing", root), [])
 
+    def test_tests_rule_accepts_js_ts_ecosystem_signals(self):
+        # Real-repo finding: e2e/ + playwright.config.ts is a test setup.
+        for files in (
+            {"e2e/": None},
+            {"__tests__/": None},
+            {"playwright.config.ts": "export default {};\n"},
+            {"vitest.config.mjs": "export default {};\n"},
+            {"app.test.ts": "it('works', () => {});\n"},
+            {"routes.spec.js": "it('works', () => {});\n"},
+        ):
+            with self.subTest(files=sorted(files)):
+                with tempfile.TemporaryDirectory() as tmp:
+                    root = Path(tmp)
+                    for name, content in files.items():
+                        if content is None:
+                            (root / name).mkdir()
+                        else:
+                            (root / name).write_text(content, encoding="utf-8")
+                    self.assertEqual(self._one("repo.tests.missing", root), [])
+
+    def test_tests_rule_ignores_lookalike_config_names(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "playwright.config.ts.bak").write_text("x\n", encoding="utf-8")
+            findings = self._one("repo.tests.missing", root)
+        self.assertEqual(len(findings), 1)
+
     def test_ci_rule_accepts_github_yaml_and_root_ci_files(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

@@ -12,9 +12,13 @@
   像误报，但跨平台发布时是真实风险。
 - manifest 清单为冻结的 12 种文件名（见 `rules/repository_files.py`），
   未收录的生态（如 `cabal.project`、`deno.json`）会误报缺失。
-- 测试规则只查 `tests/`/`test/` 目录、4 种配置文件名与根目录
-  `test_*.py`/`*_test.py` 模式；测试放在其他位置（如 `src/tests/`）
-  会误报缺失。文件存在不证明测试能通过。
+- 测试规则识别冻结信号集：目录 `tests/`、`test/`、`e2e/`、`__tests__/`；
+  Python 配置 conftest.py、pytest.ini、tox.ini、noxfile.py；JS/TS runner
+  配置（playwright/vitest/jest/cypress/karma 常见文件名）；根目录文件名
+  `test_*.py`、`*_test.py`、`*.test.*`、`*.spec.*`。测试只存在于更深层级
+  （如 `src/**/*.spec.ts` 且无任何根级信号）时会误报缺失——该规则的视野
+  是根目录与冻结目录名，不做递归内容扫描。文件存在不证明测试能通过
+  （信号来源：真实仓库 dogfood 发现 e2e + playwright 配置被判缺失后扩展）。
 - CI 识别 GitHub Actions（`.github/workflows/*.yml|yaml`）与 4 种根级
   配置（`.gitlab-ci.yml` 等）；其他 CI 系统（Jenkinsfile、circleci 目录）
   会误报缺失。

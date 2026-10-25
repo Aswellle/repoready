@@ -108,7 +108,7 @@
     },
     {
       "detail": "No test directory or test configuration was detected; this does not prove tests exist elsewhere, but nothing signals runnable tests.",
-      "evidence": "Checked for directories 'tests' or 'test', files conftest.py, pytest.ini, tox.ini, noxfile.py, and root files matching test_*.py or *_test.py; none found.",
+      "evidence": "Checked for directories 'tests', 'test', 'e2e' or '__tests__', Python files conftest.py, pytest.ini, tox.ini, noxfile.py, JS/TS runner configs such as playwright/vitest/jest/cypress configs, and root files matching test_*.py, *_test.py, *.test.* or *.spec.*; none found.",
       "path": null,
       "rule_id": "repo.tests.missing",
       "severity": "warning",

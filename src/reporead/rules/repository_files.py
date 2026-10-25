@@ -34,9 +34,47 @@ MANIFEST_NAMES = frozenset(
         "composer.json",
     }
 )
-TEST_DIRS = frozenset({"tests", "test"})
-TEST_CONFIG_FILES = frozenset({"conftest.py", "pytest.ini", "tox.ini", "noxfile.py"})
-TEST_FILE_PATTERNS = ("test_*.py", "*_test.py")
+TEST_DIRS = frozenset({"tests", "test", "e2e", "__tests__"})
+TEST_CONFIG_FILES = frozenset(
+    {
+        # Python
+        "conftest.py",
+        "pytest.ini",
+        "tox.ini",
+        "noxfile.py",
+        # JavaScript / TypeScript runners
+        "playwright.config.ts",
+        "playwright.config.js",
+        "playwright.config.mjs",
+        "vitest.config.ts",
+        "vitest.config.js",
+        "vitest.config.mjs",
+        "jest.config.js",
+        "jest.config.ts",
+        "jest.config.mjs",
+        "jest.config.cjs",
+        "cypress.config.ts",
+        "cypress.config.js",
+        "karma.conf.js",
+        "karma.conf.cjs",
+    }
+)
+TEST_FILE_PATTERNS = (
+    "test_*.py",
+    "*_test.py",
+    "*.test.ts",
+    "*.test.tsx",
+    "*.test.js",
+    "*.test.jsx",
+    "*.test.mjs",
+    "*.test.cjs",
+    "*.spec.ts",
+    "*.spec.tsx",
+    "*.spec.js",
+    "*.spec.jsx",
+    "*.spec.mjs",
+    "*.spec.cjs",
+)
 # Case-insensitive root-level CI configs (GitHub Actions is handled via
 # the .github/workflows listing on the context).
 ROOT_CI_FILES = frozenset(
@@ -164,9 +202,12 @@ def check_tests(ctx: ScanContext):
             ),
             path=None,
             evidence=(
-                "Checked for directories 'tests' or 'test', files "
-                "conftest.py, pytest.ini, tox.ini, noxfile.py, and root "
-                "files matching test_*.py or *_test.py; none found."
+                "Checked for directories 'tests', 'test', 'e2e' or "
+                "'__tests__', Python files conftest.py, pytest.ini, "
+                "tox.ini, noxfile.py, JS/TS runner configs such as "
+                "playwright/vitest/jest/cypress configs, and root files "
+                "matching test_*.py, *_test.py, *.test.* or *.spec.*; "
+                "none found."
             ),
             suggestion=(
                 "Add a tests/ directory with at least one runnable test "
