@@ -1,6 +1,6 @@
 # RepoReady 产品简报与 PRD
 
-> 品牌名：**RepoReady**（2026-10-26 由维护者确定）。源码、包名与本地 CLI 使用内部开发标识 `reporead`；发布用品牌、PyPI 包名与 CLI 命令在发布前由维护者单独决策，不得宣称已可用。近名项目事实与决策记录见 `IMPLEMENTATION_READINESS_REVIEW.md` §9 与 `../PROJECT_NAMING_AND_RELEASE.md`。
+> 品牌名与发布名：**RepoReady**（2026-10-26 由维护者确定）。PyPI 包名与 CLI 命令为 `repoready`；发布前必须重查占用情况，不得宣称已可用。近名项目事实与决策记录见 `IMPLEMENTATION_READINESS_REVIEW.md` §9 与 `../PROJECT_NAMING_AND_RELEASE.md`。
 
 ## 一句话定位
 
@@ -28,7 +28,7 @@ Essential files 存在性检查是门槛基础，不作为营销卖点。功能�
 
 ## MVP 功能
 
-- `reporead check [PATH]` 检查指定目录（默认当前目录）。
+- `repoready check [PATH]` 检查指定目录（默认当前目录）。
 - Essential files 存在性：README、LICENSE、.gitignore、依赖/项目 manifest、测试目录或测试配置、CI workflow、CONTRIBUTING、SECURITY、CODE_OF_CONDUCT、CHANGELOG、Issue/PR 模板。
 - README 结构提示：H1、安装/运行、使用示例（启发式；结论一律写"未检测到"，不写绝对判断）。
 - README 内部链接与图片路径检查（MVP 范围仅 README；fenced code block 排除；外链不联网、只列为未检查）。
@@ -62,7 +62,7 @@ Essential files 存在性检查是门槛基础，不作为营销卖点。功能�
 
 ## 成功标准
 
-- `pip install -e .` 可运行；无需安装时 `python -m reporead` 可运行。
+- `pip install -e .` 可运行；无需安装时 `python -m repoready` 可运行。
 - 同一仓库重复检查输出字节级一致；JSON 报告机器可读且符合 schema。
 - 对符号链接、权限错误、超大文件和无效路径安全处理；扫描不逃出仓库 root、不执行目标代码。
 - CI 能使用退出码而不是解析人类可读文本。

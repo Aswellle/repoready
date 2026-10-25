@@ -22,9 +22,9 @@ CI（`.github/workflows/ci.yml`）在三个操作系统 × 两个 Python 版本�
 
 ## 如何新增一条规则
 
-1. 先在 `docs/spec/01-architecture-rules.md` §2a 注册表加行（rule_id、默认 severity、类别、一句话判定），并同步 `src/reporead/rules/registry.py` 的 `REGISTRY`——测试会强制两处一致。
+1. 先在 `docs/spec/01-architecture-rules.md` §2a 注册表加行（rule_id、默认 severity、类别、一句话判定），并同步 `src/repoready/rules/registry.py` 的 `REGISTRY`——测试会强制两处一致。
 2. 在对应 `rules/` 模块实现检查函数：只读、可解释，返回 `list[Finding]`（不适用时返回 `None`），通过 `make_finding()` 创建 finding 以钉死 severity。
-3. 在 `src/reporead/rules/__init__.py` 的 `RULE_CHECKS` 登记 rule_id → 函数映射。
+3. 在 `src/repoready/rules/__init__.py` 的 `RULE_CHECKS` 登记 rule_id → 函数映射。
 4. 补测试：每条规则至少一个通过案例、一个失败案例；边界与误报场景写进用例。
 5. 有意改变输出文案时，重新生成 `tests/fixtures/golden_empty_report.json` 快照并说明理由。
 6. 新发现的误报/漏报边界写入 `docs/false-positives.md`。
@@ -37,4 +37,4 @@ CI（`.github/workflows/ci.yml`）在三个操作系统 × 两个 Python 版本�
 
 ## 报告问题
 
-提交 issue 时请附：`reporead --version`、完整命令行、目标仓库的最小复现片段（可合成，不要附敏感内容）、期望与实际输出。误报类问题请注明目标文件系统的平台与大小写行为。
+提交 issue 时请附：`repoready --version`、完整命令行、目标仓库的最小复现片段（可合成，不要附敏感内容）、期望与实际输出。误报类问题请注明目标文件系统的平台与大小写行为。

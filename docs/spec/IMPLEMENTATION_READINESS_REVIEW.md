@@ -200,6 +200,8 @@
 
 ## 9. 命名决策记录（不宣称可用）
 
+> **更新（2026-10-26，维护者决策）**：发布名定为 RepoReady，PyPI 包名、import 包名与 CLI 命令统一为 `repoready`（代码标识已由 `reporead` 更名）；MIT 许可证已确认。本节以下内容为决策前的历史记录，"内部标识 reporead"等表述已过时。
+
 | 名称 | 当日事实（2026-10-26 核查） | 决策 |
 |---|---|---|
 | 品牌 RepoReady | GitHub 已存在 `kanuwrld/repoready` 与 `OpenSource-Communities/RepoReady`；npm `repoready` 已被发布（v1.0.0，2025-09-23） | **采用**（维护者已定）。接受近名共存风险：README 发布稿必须含消歧说明（区别于 npm 上那款联网评估工具）。不得在任何文档声称该名称"可注册/已可用" |

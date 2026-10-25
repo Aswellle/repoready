@@ -5,25 +5,25 @@
 | 工作名 | 状态 | 发布前必须做的检查 |
 |---|---|---|
 | RowLens | 暂定 | GitHub 仓库名、NPM 包、域名、搜索可发现性和商标冲突 |
-| **RepoReady**（原工作名 RepoRead；代码内部标识 `reporead`） | 品牌已定（2026-10-26） | 近名项目已存在（见下）；发布前必须重查 GitHub、PyPI、npm、域名及商标，并重估混淆风险 |
+| **RepoReady** | 品牌与发布名已定（2026-10-26）：PyPI 包名、import 包名与 CLI 命令统一为 `repoready` | 近名项目已存在（见下）；发布前必须重查 GitHub、PyPI、npm、域名及商标，并重估混淆风险 |
 | CleanSlate | 暂定 | 名称通用且容易重名；检查 GitHub、NPM、域名及商标 |
 
 已核实事实（2026-10-26，官方注册表/仓库查询；时点快照，发布时必须重新核验）：
 
 - GitHub：`kanuwrld/repoready`（Python 离线检查器）与 `OpenSource-Communities/RepoReady`（联网评估工具）已存在；`shidesheng0218/repo-ready` 为近名。
-- npm：`repoready` 已发布（v1.0.0，2025-09-23）；`reporead` 未注册。
-- PyPI：`reporead` 与 `repoready` 均未注册（查询返回 404）。未做任何预留。
-- 内部开发标识 `reporead`（包名、CLI 命令、模块路径）仅用于本地开发，不构成可用性声明；发布名由维护者在发布决策时单独确定。
+- npm：`repoready` 已被他人发布（v1.0.0，2025-09-23）；本项目因此**不发布 npm 包**，README 保留消歧说明。
+- PyPI：`reporead` 与 `repoready` 当时均未注册（查询返回 404）。未做任何预留；发布当日重查 `repoready`。
+- 发布名决策（2026-10-26）：维护者确定发布名 RepoReady，代码标识已同步由 `reporead` 更名为 `repoready`。
 
 不因为名称可用就自动把项目发布到用户账户；发布、创建远程仓库、推送 release 等外部动作须由用户明确授权。
 
-## 2. 许可证建议
+## 2. 许可证
 
 - RowLens：MIT，适合轻量开发者工具；若选 MIT，添加完整 LICENSE 文件并在 README 标明。
-- RepoReady：MIT，同样适用于零依赖 CLI；需确保规则或模板没有复制不兼容许可证内容。
+- RepoReady：**MIT 已确认（2026-10-26 维护者决策）**，LICENSE 文件已添加；需确保规则或模板没有复制不兼容许可证内容。
 - CleanSlate：MIT 可行，但二进制格式处理器、元数据解析依赖及测试样本必须各自核验许可证和来源。
 
-以上是建议，不是法律意见。正式发布前由项目维护者确认许可证选择。
+以上建议不是法律意见。
 
 ## 3. 每个仓库的最小发布资产
 

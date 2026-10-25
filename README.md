@@ -24,12 +24,12 @@ cd repoready
 pip install -e .
 ```
 
-无需安装时可用模块入口：`python -m reporead`。
+无需安装时可用模块入口：`python -m repoready`。
 
 对任意仓库做检查（只读，不修改目标）：
 
 ```console
-$ reporead check path/to/repo --strict
+$ repoready check path/to/repo --strict
 rules evaluated: 21 (14 passed, 7 failed)
 findings: 1 error(s), 6 warning(s), 3 info
 findings:
@@ -47,7 +47,7 @@ findings:
 JSON 输出机器可读、字节级可复现，可直接被 CI 断言：
 
 ```bash
-reporead check . --format json --output report.json
+repoready check . --format json --output report.json
 ```
 
 **退出码**：`0` 无 error（且 `--strict` 下无 warning）；`1` 存在 error（或 strict 下存在 warning）；`2` CLI 参数、配置、路径或输出写入错误。
@@ -63,7 +63,7 @@ paths = ["drafts/", "notes/*.md"]
 ```
 
 ```bash
-reporead check . --config reporead.toml
+repoready check . --config repoready.toml
 ```
 
 ## 明确不做
@@ -82,4 +82,4 @@ python -m build                            # 构建验证
 
 ## License
 
-未定稿：发布前由维护者确认（倾向 MIT，见 [docs/PROJECT_NAMING_AND_RELEASE.md](docs/PROJECT_NAMING_AND_RELEASE.md)）。
+MIT —— 见 [LICENSE](LICENSE)（2026-10-26 由维护者确认）。

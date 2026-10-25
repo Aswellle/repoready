@@ -5,6 +5,11 @@
 
 ## Unreleased
 
+### Changed
+
+- 发布名决策落地：包名、import 路径与 CLI 命令由内部标识 `reporead` 统一更名为 `repoready`（维护者决策，2026-10-26）；npm 包因名称被占用而明确不发布，README 保留与近名项目的消歧说明。
+- 许可证确认为 MIT 并添加 LICENSE；pyproject 声明 license 与 readme 字段；SECURITY.md 配置公开联系邮箱。
+
 ### Added
 
 - 只读、离线的仓库就绪度检查引擎：22 条规则注册表（rule_id/severity/类别单一事实源，与架构文档 §2a 表一致性由测试锁定），按适用性自动跳过（不计入 passed/failed）。

@@ -1,10 +1,10 @@
 # RepoReady 实施计划与验收
 
-> 品牌 RepoReady；代码内部标识 `reporead`。差异化定位与修订决策见 `IMPLEMENTATION_READINESS_REVIEW.md`；实施时先读该文件。
+> 品牌 RepoReady；包名与命令 `repoready`。差异化定位与修订决策见 `IMPLEMENTATION_READINESS_REVIEW.md`；实施时先读该文件。
 
 ## Phase 0 — 工程骨架与契约冻结
 
-- 建立 `pyproject.toml`（PEP 517、setuptools、版本单一来源 `reporead.__version__`）、src 布局包、`__main__.py`、`argparse` CLI。
+- 建立 `pyproject.toml`（PEP 517、setuptools、版本单一来源 `repoready.__version__`）、src 布局包、`__main__.py`、`argparse` CLI。
 - 首版 CLI 面冻结：`check [PATH]`、`--format text|json`、`--strict`、`--output PATH`、`--help`、`--version`。
 - 定义 finding/report 数据模型（`models.py`），并与 `report.schema.json` 做双向结构一致性测试；text/JSON 渲染确定性（同输入字节级一致）。
 - 冻结退出码决策表（`01-architecture-rules.md` §4）并单元测试。

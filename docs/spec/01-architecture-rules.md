@@ -1,13 +1,13 @@
 # RepoReady 架构与检查规则
 
-> 品牌 RepoReady；代码内部标识 `reporead`（发布名由维护者发布前决策）。定位与竞品依据见 `IMPLEMENTATION_READINESS_REVIEW.md`。
+> 品牌 RepoReady；包名与 CLI 命令 `repoready`（发布名决策 2026-10-26，发布前重查占用）。定位与竞品依据见 `IMPLEMENTATION_READINESS_REVIEW.md`。
 
 ## 1. 目录
 
 ```text
-src/reporead/
+src/repoready/
   __init__.py         # __version__ 单一来源
-  __main__.py         # python -m reporead
+  __main__.py         # python -m repoready
   cli.py              # argparse CLI
   models.py           # finding/report 模型、summary 计数、退出码决策
   scanner.py          # root 校验与只读枚举

@@ -1,14 +1,14 @@
-# RepoRead 实施前的默认决策与差距锁定
+# RepoReady 实施前的默认决策与差距锁定
 
 本文件用于补足原蓝图中少量尚未完全收敛的实施细节。Agent 应按以下默认值先完成 MVP，不要在实现过程中临时扩大范围。
 
 ## 命名
 
-品牌名定为 **RepoReady**（2026-10-26 维护者确定）。代码与本地开发标识保持 `reporead`（包名、模块路径、CLI 命令）；发布用名称在发布前由维护者单独决策并重新核验占用情况。当日已核实事实：GitHub 已存在 `kanuwrld/repoready` 与 `OpenSource-Communities/RepoReady`（即 npm `repoready@1.0.0`，2025-09-23 发布）；`shidesheng0218/repo-ready` 为近名；PyPI `reporead`/`repoready` 均未注册（404，非预留）。本轮只按内部标识实现，不注册远端仓库、不发布包、不声称任何名称已最终可用。代码中集中管理版本与命令名。差异化定位与竞品对比见 `IMPLEMENTATION_READINESS_REVIEW.md`（2026-10-26 已审定）。
+品牌名与发布名定为 **RepoReady**（2026-10-26 维护者确定），PyPI 包名与 CLI 命令为 `repoready`，发布前必须重新核验占用情况。决策时点已核实事实：GitHub 已存在 `kanuwrld/repoready` 与 `OpenSource-Communities/RepoReady`（即 npm `repoready@1.0.0`，2025-09-23 发布）；`shidesheng0218/repo-ready` 为近名；PyPI `reporead`/`repoready` 当时均未注册（404，非预留）。维护者已知悉近名共存风险并在 README 保留消歧说明。本轮不注册远端仓库、不发布包、不声称任何名称已最终可用。代码中集中管理版本与命令名。差异化定位与竞品对比见 `IMPLEMENTATION_READINESS_REVIEW.md`（2026-10-26 已审定）。
 
 ## MVP CLI 冻结
 
-- 必须实现：`reporead check [PATH]`、`--help`、`--version`、`--format text|json`、`--strict`、`--output PATH`。
+- 必须实现：`repoready check [PATH]`、`--help`、`--version`、`--format text|json`、`--strict`、`--output PATH`。
 - 稳定退出码按 `01-architecture-rules.md` §4 决策表：`0` 无 error 且（strict 下）无 warning；`1` 存在 error，或 strict 模式下存在 warning；`2` CLI 参数、配置、路径访问或输出写入错误。
 - **不实现分数、`--min-score` 或复杂配置覆盖。** 文档中的这些能力视为后续候选项，避免用缺乏依据的评分表示仓库质量。
 - `--config PATH` 已实现：冻结 TOML schema（`[rules].disable`、`[ignore].paths`，见 `01-architecture-rules.md` §6）；未知键、类型错误、未注册 rule_id 或越界忽略路径返回退出码 2；不接受执行代码的配置。

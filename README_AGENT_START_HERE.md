@@ -1,6 +1,6 @@
 # RepoReady Agent 启动包
 
-这是一个**独立项目实施包**。品牌名 **RepoReady**（2026-10-26 确定）；代码与本地开发使用内部标识 `reporead`，发布名由维护者发布前决策。本目录已是独立 Git 仓库（main 分支），可直接在此实施。
+这是一个**独立项目实施包**。品牌名与发布名 **RepoReady**（2026-10-26 确定）：包名与 CLI 命令为 `repoready`，发布前重查占用。本目录已是独立 Git 仓库（main 分支），可直接在此实施。
 
 ## 目录契约
 
@@ -28,7 +28,7 @@
 README.md
 LICENSE
 pyproject.toml
-src/reporead/      # reporead 为内部开发标识
+src/repoready/      # 包名与 CLI 命令 repoready（发布名决策 2026-10-26）
 tests/
 docs/AI_AGENT_WORKING_RULES.md
 docs/spec/
