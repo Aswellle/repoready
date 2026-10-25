@@ -1,0 +1,25 @@
+# RepoReady（内部开发名 reporead）可复制 CI 门禁示例。
+#
+# 注意：安装名 `reporead` 是内部开发标识，发布名以发布决策为准；
+# 正式发布后把 `pip install reporead` 换成最终包名即可。
+# `--strict` 让 warning 也算失败（退出码 1），适合作为发布前门禁；
+# 首次接入的项目可以先去掉 --strict 观察基线。
+
+name: repo-readiness
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  reporead:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install reporead
+        run: pip install reporead
+      - name: Repository readiness check
+        run: reporead check . --strict
