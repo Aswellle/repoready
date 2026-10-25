@@ -1,9 +1,10 @@
 # Changelog
 
-本项目遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/) 约定；
-尚未发布任何版本，以下为 Unreleased 条目。发布版本号与日期在发布决策时确定。
+本项目遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/) 约定。
 
-## Unreleased
+## 0.1.0 - 2026-10-26
+
+首个公开版本：离线、只读的仓库就绪度检查。
 
 ### Changed
 
