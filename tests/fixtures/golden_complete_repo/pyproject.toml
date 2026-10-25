@@ -1,3 +1,6 @@
 [project]
 name = "golden"
 version = "0.0.0"
+description = "Golden fixture used by automated tests."
+readme = "README.md"
+license = "MIT"

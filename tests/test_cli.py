@@ -127,10 +127,10 @@ class CheckExitCodeTests(unittest.TestCase):
 
 
 class GoldenFixtureTests(unittest.TestCase):
-    def test_complete_repo_passes_all_nineteen_rules(self):
+    def test_complete_repo_passes_all_applicable_rules(self):
         code, out, _ = _run(["check", str(GOLDEN_COMPLETE)])
         self.assertEqual(code, 0)
-        self.assertIn("rules evaluated: 19 (19 passed, 0 failed)", out)
+        self.assertIn("rules evaluated: 21 (21 passed, 0 failed)", out)
         self.assertIn("no findings", out)
 
     def test_complete_repo_json_exit_zero(self):

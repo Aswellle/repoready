@@ -58,6 +58,28 @@
 - 纯锚点链接（`#section`）只对 README 自身标题校验；指向渲染后生成
   的锚点（如 GitHub 自动目录）可能报 info 级未匹配。
 
+## 发布元数据规则（`meta.*`）
+
+- `meta.pyproject.required-fields`：仅在 pyproject.toml 存在时适用；冻结的必填集为
+  name、version、description、readme，以及 license 或 license-files 之一。列在
+  `dynamic` 中的字段视为已声明，但**不验证**动态来源（如 `[tool.setuptools.dynamic]`）
+  是否真的存在。
+- 仅识别 PEP 621 的 `[project]` 表：使用 `[tool.poetry]` 等非 PEP 621 布局的
+  项目会报"无 [project] 表"——这是真实的 PyPI 发布信号，但对暂不迁移的项目
+  观感偏严。setup.py/setup.cfg-only 项目不做任何字段检查（解析 setup.py 需要
+  执行代码，违反只读约束）。
+- TOML/JSON 解析失败各报一条格式 finding，证据只含解析错误摘要（≤200 字符），
+  不回显文件内容。
+- `meta.packagejson.required-fields`：仅查根目录 package.json，不进入 monorepo
+  的子包；`"private": true` 不豁免字段检查（存在性规则不做发布意图判断）。
+- `meta.changelog.current-entry`：只识别围栏外标题行中的 "Unreleased" 或
+  `v?主.次[.修订]` 形式版本号（含 keep-a-changelog 的 `[1.2.3]` 括号形式）；
+  纯日期式 changelog 不识别。标题**包含**版本号即算命中（如
+  "## Fixes backported to 1.2" 也算），方向为宽进。
+- 邻域说明（2026-10-26 经 PyPI 核对）：pyroma 5.0.1 做语义更深的打包友好度
+  评级，check-manifest 0.51 校验 sdist 文件完整性；本组规则保持零依赖、
+  仅存在性检查，与其不互换也不重复其语义判断。
+
 ## 计数与退出语义
 
 - 无 README 时，7 条 README 依赖规则（`readme.*`、`link.*`）跳过，

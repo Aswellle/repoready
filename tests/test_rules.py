@@ -312,7 +312,7 @@ class EngineTests(unittest.TestCase):
     def test_complete_golden_repo_passes(self):
         findings, evaluated = run_checks(self.FIXTURES / "golden_complete_repo")
         self.assertEqual(findings, ())
-        self.assertEqual(evaluated, 19)
+        self.assertEqual(evaluated, 21)
 
     def test_empty_root_skips_readme_dependent_rules(self):
         with tempfile.TemporaryDirectory() as tmp:

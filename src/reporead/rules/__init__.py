@@ -11,7 +11,13 @@ from pathlib import Path
 
 from reporead.models import Finding
 
-from . import community_files, markdown_links, readme_quality, repository_files
+from . import (
+    community_files,
+    markdown_links,
+    readme_quality,
+    release_metadata,
+    repository_files,
+)
 from .context import ScanContext, build_context
 from .registry import REGISTRY, RegistryError, RuleSpec, make_finding
 
@@ -22,6 +28,7 @@ CHECKS = (
     + community_files.CHECKS
     + readme_quality.CHECKS
     + markdown_links.CHECKS
+    + release_metadata.CHECKS
 )
 
 

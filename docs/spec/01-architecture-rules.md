@@ -20,6 +20,7 @@ src/reporead/
     readme_quality.py   # README 结构启发式规则
     markdown_links.py   # README 本地链接/图片/锚点/外链计数规则
     markdown_text.py    # 围栏过滤、行号迭代、大小上限读取
+    release_metadata.py # pyproject/package.json 字段与 CHANGELOG 条目规则
   report_text.py      # text 渲染（无 ANSI、确定性）
   report_json.py      # JSON 渲染（schema 契约、确定性）
   config.py           # --config 支持；Phase 3 才加入
@@ -35,6 +36,7 @@ tests/
   test_readme_rules.py
   test_markdown_links.py
   test_markdown_text.py
+  test_release_metadata.py
 ```
 
 如果使用标准 `src/` 布局，pyproject 必须正确配置包发现；禁止同名顶级文件遮蔽包。
