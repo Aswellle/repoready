@@ -5,19 +5,25 @@ These checks look for structural signals only. Findings are worded as
 that documentation is missing or bad. All checks return None (skipped)
 when the repository has no README.
 
-MVP subset: ATX headings (#+) and fenced code blocks only; setext
-headings, indented code blocks and HTML tags are documented
-limitations (docs/false-positives.md).
+Heading detection covers ATX (#), setext (text + ===/---) and the
+HTML <h1> form; fenced code blocks are excluded. Remaining limitations
+(indented code blocks, logo-only titles) are documented in
+docs/false-positives.md.
 """
 
 from __future__ import annotations
 
-import re
-
 from repoready.rules.registry import make_finding
 
 from .context import ScanContext
-from .markdown_text import README_SIZE_LIMIT, has_fenced_code, iter_unfenced_lines, read_capped
+from .markdown_text import (
+    README_SIZE_LIMIT,
+    has_fenced_code,
+    has_html_h1,
+    iter_headings,
+    iter_unfenced_lines,
+    read_capped,
+)
 from .repository_files import find_readme
 
 # Substring keywords (case-insensitive) considered install/run signals.
@@ -43,9 +49,6 @@ USAGE_KEYWORDS = (
     "cli",
 )
 
-ATX_HEADING = re.compile(r"^[ \t]{0,3}(#{1,6})\s+")
-
-
 def _scan_readme(ctx: ScanContext):
     """Return (path, text, truncated) or None when there is no README."""
     readme = find_readme(ctx)
@@ -60,10 +63,11 @@ def check_no_h1(ctx: ScanContext):
     if scan is None:
         return None
     readme, text, _ = scan
-    for _, line in iter_unfenced_lines(text):
-        match = ATX_HEADING.match(line)
-        if match and len(match.group(1)) == 1:
+    for _, level, _text in iter_headings(text):
+        if level == 1:
             return []
+    if has_html_h1(text):
+        return []
     return [
         make_finding(
             "readme.no-h1",
@@ -74,8 +78,8 @@ def check_no_h1(ctx: ScanContext):
             ),
             path=readme.name,
             evidence=(
-                "No line starting with a single '#' was found outside "
-                "fenced code blocks."
+                "No ATX '#', setext underline or HTML <h1> heading was "
+                "found outside fenced code blocks."
             ),
             suggestion="Start the README with a '# Project Name' heading.",
         )

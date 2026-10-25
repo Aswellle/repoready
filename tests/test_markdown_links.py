@@ -47,6 +47,26 @@ class SlugTests(unittest.TestCase):
         text = "## Setup ##\n"
         self.assertEqual(ml._slug_anchors(text), {"setup"})
 
+    def test_setext_heading_anchors_collected(self):
+        # ripgrep-style: setext H1 title + ATX sections.
+        text = "ripgrep (rg)\n------------\n\n### Installation\n"
+        self.assertEqual(ml._slug_anchors(text), {"ripgrep-rg", "installation"})
+
+    def test_html_name_anchors_collected(self):
+        # ripgrep FAQ-style: <h3 name="complete"> is a GitHub anchor target.
+        text = '<h3 name="complete">\n<a id="posix4ever"></a>\n'
+        self.assertEqual(
+            ml._slug_anchors(text), {"complete", "posix4ever"}
+        )
+
+    def test_faq_style_anchor_resolves_in_real_shape(self):
+        # Real ripgrep FAQ.md shape: TOC link + <h3 name=...> target.
+        files = {
+            "README.md": "* [Shell completions](FAQ.md#complete)\n",
+            "FAQ.md": "## FAQ\n\n<h3 name=\"complete\">\n",
+        }
+        self.assertEqual(_run(ml.check_anchors, files), [])
+
 
 class LinkTargetTests(unittest.TestCase):
     def test_passes_for_existing_relative_target(self):

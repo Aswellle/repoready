@@ -52,9 +52,21 @@ class NoH1Tests(unittest.TestCase):
         findings = _run(rq.check_no_h1, {"README.md": "    # Title\n"})
         self.assertEqual(len(findings), 1)
 
-    def test_setext_heading_not_supported(self):
-        findings = _run(rq.check_no_h1, {"README.md": "Title\n=====\n"})
-        self.assertEqual(len(findings), 1)
+    def test_setext_h1_passes(self):
+        # "===" underline is a real setext H1.
+        files = {"README.md": "Title\n=====\n\nbody\n"}
+        self.assertEqual(_run(rq.check_no_h1, files), [])
+
+    def test_setext_h2_title_still_warns(self):
+        # ripgrep-style: dashes make the title a setext H2, so the file
+        # genuinely has no H1; the warning is accurate.
+        files = {"README.md": "ripgrep (rg)\n------------\n\nbody\n"}
+        self.assertEqual(len(_run(rq.check_no_h1, files)), 1)
+
+    def test_html_h1_passes(self):
+        # junit5-style HTML title block.
+        files = {"README.md": "<h1>\n  <img src=\"logo.svg\">\n</h1>\n"}
+        self.assertEqual(_run(rq.check_no_h1, files), [])
 
 
 class InstallTests(unittest.TestCase):

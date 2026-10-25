@@ -19,16 +19,19 @@ import tomllib
 from repoready.rules.registry import make_finding
 
 from .context import ScanContext
-from .markdown_text import README_SIZE_LIMIT, iter_unfenced_lines, read_capped
+from .markdown_text import (
+    README_SIZE_LIMIT,
+    iter_headings,
+    read_capped,
+)
 
 # Frozen required [project] fields (docs/spec review §5 D2): name,
 # version, description, readme, plus license or license-files.
 PYPROJECT_FIELDS = ("name", "version", "description", "readme")
 PACKAGEJSON_FIELDS = ("name", "version", "description", "license")
 
-CHANGELOG_VERSION_HEADING = re.compile(
-    r"^[ \t]{0,3}#{1,6}[ \t]+.*\b(?:unreleased|v?\d+\.\d+(?:\.\d+)?)\b",
-    re.IGNORECASE,
+CHANGELOG_VERSION_TEXT = re.compile(
+    r"\b(?:unreleased|v?\d+\.\d+(?:\.\d+)?)\b", re.IGNORECASE
 )
 
 
@@ -203,8 +206,8 @@ def check_changelog_entry(ctx: ScanContext):
     if path is None:
         return None
     text, _ = read_capped(path)
-    for _, line in iter_unfenced_lines(text):
-        if CHANGELOG_VERSION_HEADING.match(line):
+    for _, _level, heading in iter_headings(text):
+        if CHANGELOG_VERSION_TEXT.search(heading):
             return []
     return [
         make_finding(

@@ -144,6 +144,13 @@ class ChangelogTests(unittest.TestCase):
         files = {"CHANGELOG.md": "# Changelog\n\n## 0.1.0\n\n- initial\n"}
         self.assertEqual(_run(rm.check_changelog_entry, files), [])
 
+    def test_passes_with_setext_version_heading(self):
+        # ripgrep-style plain-text changelog: version line + === underline.
+        files = {
+            "CHANGELOG.md": "TBD\n===\n\n15.2.0 (2026-07-15)\n===========\n\nfixes\n"
+        }
+        self.assertEqual(_run(rm.check_changelog_entry, files), [])
+
     def test_passes_with_unreleased_heading(self):
         files = {"CHANGELOG.md": "## Unreleased\n\n- wip\n"}
         self.assertEqual(_run(rm.check_changelog_entry, files), [])

@@ -7,6 +7,9 @@ from pathlib import Path
 from repoready.rules.markdown_text import (
     README_SIZE_LIMIT,
     has_fenced_code,
+    has_html_h1,
+    html_anchor_names,
+    iter_headings,
     iter_unfenced_lines,
     read_capped,
 )
@@ -68,6 +71,54 @@ class UnfencedLineTests(unittest.TestCase):
         text = "    ```\nnot a fence\n```\n"
         lines = list(iter_unfenced_lines(text))
         self.assertEqual(lines, [(1, "    ```"), (2, "not a fence")])
+
+
+class HeadingTests(unittest.TestCase):
+    def test_atx_headings_with_levels(self):
+        text = "# H1\n\n### H3\n"
+        self.assertEqual(
+            list(iter_headings(text)), [(1, 1, "H1"), (3, 3, "H3")]
+        )
+
+    def test_setext_h1_and_h2(self):
+        text = "ripgrep (rg)\n------------\n\nTitle\n=====\n"
+        self.assertEqual(
+            list(iter_headings(text)),
+            [(1, 2, "ripgrep (rg)"), (4, 1, "Title")],
+        )
+
+    def test_blank_line_breaks_setext_paragraph(self):
+        # "not a heading" and "---" are separated by a blank line: the
+        # dashes are a thematic break, not a setext underline.
+        text = "not a heading\n\n---\n\nafter\n"
+        self.assertEqual(list(iter_headings(text)), [])
+
+    def test_thematic_break_after_paragraph_is_not_setext(self):
+        text = "para\n***\nafter\n"
+        self.assertEqual(list(iter_headings(text)), [])
+
+    def test_headings_inside_fence_are_ignored(self):
+        text = "```\n# fake\nfake2\n====\n```\nafter\n"
+        self.assertEqual(list(iter_headings(text)), [])
+
+    def test_trailing_hashes_in_atx_text_kept_for_slug_trim(self):
+        text = "## Setup ##\n"
+        self.assertEqual(list(iter_headings(text)), [(1, 2, "Setup ##")])
+
+
+class HtmlAnchorTests(unittest.TestCase):
+    def test_html_name_and_id_anchors_collected(self):
+        text = '<h3 name="complete">\n<a id="posix4ever"></a>\n'
+        self.assertEqual(html_anchor_names(text), {"complete", "posix4ever"})
+
+    def test_anchor_inside_fence_ignored(self):
+        text = "```\n<h3 name=\"fake\">\n```\n"
+        self.assertEqual(html_anchor_names(text), set())
+
+    def test_has_html_h1(self):
+        self.assertTrue(has_html_h1("<h1>\n  <img>\n</h1>\n"))
+        self.assertFalse(has_html_h1("<h2>sub</h2>\n"))
+        self.assertFalse(has_html_h1("```\n<h1>fake</h1>\n```\n"))
 
 
 class HasFencedCodeTests(unittest.TestCase):

@@ -4,9 +4,10 @@ MVP subset, enforced by tests and documented in
 docs/false-positives.md: inline links/images, full and collapsed
 reference links, link reference definitions, autolink-free angle
 destinations, fenced-code exclusion, URL decoding, backslash
-separators, GitHub-style heading slugs (with -1/-2 duplicates).
-Not supported: HTML <a>/<img> tags, bare shorthand references,
-nested brackets in labels, setext headings.
+separators, GitHub-style heading slugs (with -1/-2 duplicates) from
+ATX and setext headings, plus HTML name/id anchors. Not supported:
+HTML <a>/<img> destinations, bare shorthand references, nested
+brackets in labels.
 """
 
 from __future__ import annotations
@@ -17,7 +18,12 @@ import urllib.parse
 from repoready.rules.registry import make_finding
 
 from .context import ScanContext
-from .markdown_text import iter_unfenced_lines, read_capped
+from .markdown_text import (
+    html_anchor_names,
+    iter_headings,
+    iter_unfenced_lines,
+    read_capped,
+)
 from .repository_files import find_readme
 
 MARKDOWN_SUFFIXES = (".md", ".markdown")
@@ -37,7 +43,6 @@ REFERENCE_DEF_RE = re.compile(
     r"(?:<(?P<angle>[^>]*)>|(?P<bare>\S+))"
     r"(?:\s+(?:'[^']*'|\"[^\"]*\"|\([^)]*\)))?[ \t]*$"
 )
-ATX_HEADING = re.compile(r"^[ \t]{0,3}(#{1,6})\s+(.*)$")
 TRAILING_HASHES = re.compile(r"\s+#+\s*$")
 
 
@@ -109,15 +114,13 @@ def _classify(dest: str) -> tuple[str, tuple[str, str] | None]:
 def _slug_anchors(text: str) -> set[str]:
     counts: dict[str, int] = {}
     anchors: set[str] = set()
-    for _, line in iter_unfenced_lines(text):
-        match = ATX_HEADING.match(line)
-        if not match:
-            continue
-        heading = TRAILING_HASHES.sub("", match.group(2))
+    for _, _level, heading in iter_headings(text):
+        heading = TRAILING_HASHES.sub("", heading)
         slug = github_slug(heading)
         seen = counts.get(slug, 0)
         counts[slug] = seen + 1
         anchors.add(slug if seen == 0 else f"{slug}-{seen}")
+    anchors |= html_anchor_names(text)
     return anchors
 
 
