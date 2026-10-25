@@ -35,6 +35,7 @@ class ScanContext:
     workflows_files: tuple[str, ...]
     issue_template_files: tuple[str, ...]
     docs_entries: tuple[Entry, ...]
+    has_src_test_dir: bool
 
     @property
     def root_files_lower(self) -> frozenset[str]:
@@ -142,6 +143,13 @@ def build_context(
         if any(e.name.lower() == "docs" and e.is_dir for e in root_entries)
         else ()
     )
+    # Java/Maven convention: tests under src/test (second level).
+    has_src_test_dir = False
+    if any(e.name.lower() == "src" and e.is_dir for e in root_entries):
+        src_entries = _visible(_list_entries(root / "src"), "src/", ignore_paths)
+        has_src_test_dir = any(
+            e.name.lower() == "test" and e.is_dir for e in src_entries
+        )
     return ScanContext(
         root=root,
         root_entries=root_entries,
@@ -150,4 +158,5 @@ def build_context(
         workflows_files=workflows_files,
         issue_template_files=issue_template_files,
         docs_entries=docs_entries,
+        has_src_test_dir=has_src_test_dir,
     )

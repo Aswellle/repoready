@@ -145,6 +145,24 @@ class EssentialRuleEdgeTests(unittest.TestCase):
             (root / "LICENSE.TXT").write_text("x\n", encoding="utf-8")
             self.assertEqual(self._one("repo.license.missing", root), [])
 
+    def test_readme_accepts_rst_and_markdown_variants(self):
+        for name in ("README.rst", "readme.txt", "README.markdown"):
+            with self.subTest(name=name):
+                with tempfile.TemporaryDirectory() as tmp:
+                    root = Path(tmp)
+                    (root / name).write_text("x\n", encoding="utf-8")
+                    self.assertEqual(self._one("repo.readme.missing", root), [])
+
+    def test_license_accepts_copyleft_and_split_names(self):
+        # ripgrep-style split licenses (LICENSE-MIT + UNLICENSE + COPYING).
+        for name in ("LICENSE-MIT", "licence-MIT", "COPYING", "COPYING.txt",
+                     "UNLICENSE"):
+            with self.subTest(name=name):
+                with tempfile.TemporaryDirectory() as tmp:
+                    root = Path(tmp)
+                    (root / name).write_text("x\n", encoding="utf-8")
+                    self.assertEqual(self._one("repo.license.missing", root), [])
+
     def test_gitignore_requires_exact_case(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -198,6 +216,21 @@ class EssentialRuleEdgeTests(unittest.TestCase):
             (root / "playwright.config.ts.bak").write_text("x\n", encoding="utf-8")
             findings = self._one("repo.tests.missing", root)
         self.assertEqual(len(findings), 1)
+
+    def test_tests_rule_accepts_go_files_and_nested_src_test(self):
+        # cobra: root *_test.go; junit5: src/test/ (Java/Maven convention).
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "command_test.go").write_text("package cobra\n", encoding="utf-8")
+            self.assertEqual(self._one("repo.tests.missing", root), [])
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "src" / "test").mkdir(parents=True)
+            self.assertEqual(self._one("repo.tests.missing", root), [])
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "src").mkdir()
+            self.assertEqual(len(self._one("repo.tests.missing", root)), 1)
 
     def test_ci_rule_accepts_github_yaml_and_root_ci_files(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -295,11 +328,26 @@ class CommunityRuleEdgeTests(unittest.TestCase):
             ("repo.contributing.missing", "contributing.MD"),
             ("repo.security.missing", "Security.md"),
             ("repo.coc.missing", "code_of_conduct.MD"),
+            ("repo.coc.missing", "CONDUCT.md"),
         ):
             with self.subTest(rule_id=rule_id, name=name):
                 with tempfile.TemporaryDirectory() as tmp:
                     root = Path(tmp)
                     (root / name).write_text("x\n", encoding="utf-8")
+                    self.assertEqual(self._one(rule_id, root), [])
+
+    def test_community_files_recognised_under_dot_github(self):
+        # pip keeps CONTRIBUTING.md in .github/; GitHub honours that.
+        for rule_id, name in (
+            ("repo.contributing.missing", "CONTRIBUTING.md"),
+            ("repo.security.missing", "SECURITY.md"),
+            ("repo.coc.missing", "CODE_OF_CONDUCT.md"),
+        ):
+            with self.subTest(rule_id=rule_id, name=name):
+                with tempfile.TemporaryDirectory() as tmp:
+                    root = Path(tmp)
+                    (root / ".github").mkdir()
+                    (root / ".github" / name).write_text("x\n", encoding="utf-8")
                     self.assertEqual(self._one(rule_id, root), [])
 
     def test_changelog_accepts_docs_releases_md_alternative(self):
@@ -309,6 +357,15 @@ class CommunityRuleEdgeTests(unittest.TestCase):
             releases.mkdir()
             (releases / "releases.md").write_text("# 0.1.0\n", encoding="utf-8")
             self.assertEqual(self._one("repo.changelog.missing", root), [])
+
+    def test_changelog_accepts_common_name_variants(self):
+        # express keeps History.md; pip keeps NEWS.rst.
+        for name in ("History.md", "NEWS.rst", "CHANGES.rst", "RELEASES.md"):
+            with self.subTest(name=name):
+                with tempfile.TemporaryDirectory() as tmp:
+                    root = Path(tmp)
+                    (root / name).write_text("x\n", encoding="utf-8")
+                    self.assertEqual(self._one("repo.changelog.missing", root), [])
 
     def test_issue_template_dir_must_contain_files(self):
         with tempfile.TemporaryDirectory() as tmp:

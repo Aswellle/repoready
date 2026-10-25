@@ -8,8 +8,8 @@
   },
   "findings": [
     {
-      "detail": "No CHANGELOG.md or docs/releases.md was found; release changes are not traceable.",
-      "evidence": "Checked the repository root for CHANGELOG.md (case-insensitive) and docs/releases.md; none found.",
+      "detail": "No changelog file was found; release changes are not traceable.",
+      "evidence": "Checked the repository root for CHANGELOG.md, HISTORY.md, CHANGES.md/.rst, NEWS.md/.rst, RELEASES.md (case-insensitive) and docs/releases.md; none found.",
       "path": "CHANGELOG.md",
       "rule_id": "repo.changelog.missing",
       "severity": "warning",
@@ -27,7 +27,7 @@
     },
     {
       "detail": "No CODE_OF_CONDUCT.md was found; community behaviour expectations are not stated.",
-      "evidence": "Checked the repository root for CODE_OF_CONDUCT.md (case-insensitive); none found.",
+      "evidence": "Checked the repository root and .github/ for CODE_OF_CONDUCT.md or CONDUCT.md (case-insensitive); none found.",
       "path": "CODE_OF_CONDUCT.md",
       "rule_id": "repo.coc.missing",
       "severity": "warning",
@@ -36,7 +36,7 @@
     },
     {
       "detail": "No CONTRIBUTING.md was found; potential contributors have no guidance on how to help.",
-      "evidence": "Checked the repository root for CONTRIBUTING.md (case-insensitive); none found.",
+      "evidence": "Checked the repository root and .github/ for CONTRIBUTING.md (case-insensitive); none found.",
       "path": "CONTRIBUTING.md",
       "rule_id": "repo.contributing.missing",
       "severity": "warning",
@@ -54,7 +54,7 @@
     },
     {
       "detail": "No LICENSE file was found at the repository root; without a license nobody can legally use or contribute to the code.",
-      "evidence": "Checked the repository root for LICENSE, LICENSE.md or LICENSE.txt (case-insensitive); none found.",
+      "evidence": "Checked the repository root for LICENSE, LICENSE.md/.txt, LICENSE-<suffix>, COPYING*/UNLICENSE* files (case-insensitive); none found.",
       "path": "LICENSE",
       "rule_id": "repo.license.missing",
       "severity": "error",
@@ -71,8 +71,8 @@
       "title": "No dependency manifest found"
     },
     {
-      "detail": "No README or README.md was found at the repository root, so the project has no front page for strangers.",
-      "evidence": "Checked the repository root for README.md or README (case-insensitive); none found.",
+      "detail": "No README was found at the repository root, so the project has no front page for strangers.",
+      "evidence": "Checked the repository root for README.md, README, README.rst, README.txt or README.markdown (case-insensitive); none found.",
       "path": "README.md",
       "rule_id": "repo.readme.missing",
       "severity": "error",
@@ -81,7 +81,7 @@
     },
     {
       "detail": "No SECURITY.md was found; reporters have no private channel for security issues.",
-      "evidence": "Checked the repository root for SECURITY.md (case-insensitive); none found.",
+      "evidence": "Checked the repository root and .github/ for SECURITY.md (case-insensitive); none found.",
       "path": "SECURITY.md",
       "rule_id": "repo.security.missing",
       "severity": "warning",
@@ -108,7 +108,7 @@
     },
     {
       "detail": "No test directory or test configuration was detected; this does not prove tests exist elsewhere, but nothing signals runnable tests.",
-      "evidence": "Checked for directories 'tests', 'test', 'e2e' or '__tests__', Python files conftest.py, pytest.ini, tox.ini, noxfile.py, JS/TS runner configs such as playwright/vitest/jest/cypress configs, and root files matching test_*.py, *_test.py, *.test.* or *.spec.*; none found.",
+      "evidence": "Checked for directories 'tests', 'test', 'e2e', '__tests__' or 'src/test', Python files conftest.py, pytest.ini, tox.ini, noxfile.py, JS/TS runner configs such as playwright/vitest/jest/cypress configs, and root files matching test_*.py, *_test.py, *_test.go, *.test.* or *.spec.*; none found.",
       "path": null,
       "rule_id": "repo.tests.missing",
       "severity": "warning",

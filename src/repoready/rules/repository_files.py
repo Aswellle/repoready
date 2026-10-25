@@ -16,8 +16,21 @@ from repoready.rules.registry import make_finding
 from .context import ScanContext
 
 # Case-insensitive matches against lower-cased entry names.
-README_NAMES = frozenset({"readme", "readme.md"})
-LICENSE_NAMES = frozenset({"license", "license.md", "license.txt"})
+README_NAMES = frozenset(
+    {"readme", "readme.md", "readme.rst", "readme.txt", "readme.markdown"}
+)
+LICENSE_NAMES = frozenset(
+    {
+        "license",
+        "license.md",
+        "license.txt",
+        "copying",
+        "copying.txt",
+        "copying.lesser",
+        "unlicense",
+        "unlicense.txt",
+    }
+)
 MANIFEST_NAMES = frozenset(
     {
         "pyproject.toml",
@@ -62,6 +75,7 @@ TEST_CONFIG_FILES = frozenset(
 TEST_FILE_PATTERNS = (
     "test_*.py",
     "*_test.py",
+    "*_test.go",
     "*.test.ts",
     "*.test.tsx",
     "*.test.js",
@@ -90,12 +104,13 @@ def check_readme(ctx: ScanContext):
             "repo.readme.missing",
             title="README file not found",
             detail=(
-                "No README or README.md was found at the repository root, "
+                "No README was found at the repository root, "
                 "so the project has no front page for strangers."
             ),
             path="README.md",
             evidence=(
-                "Checked the repository root for README.md or README "
+                "Checked the repository root for README.md, README, "
+                "README.rst, README.txt or README.markdown "
                 "(case-insensitive); none found."
             ),
             suggestion=(
@@ -106,8 +121,18 @@ def check_readme(ctx: ScanContext):
     ]
 
 
+def _is_license_name(name_lower: str) -> bool:
+    """Recognise common license file names, including multi-license
+    splits like LICENSE-MIT (ripgrep), COPYING and UNLICENSE forms."""
+    return (
+        name_lower in LICENSE_NAMES
+        or name_lower.startswith("license-")
+        or name_lower.startswith("licence-")
+    )
+
+
 def check_license(ctx: ScanContext):
-    if ctx.root_files_lower & LICENSE_NAMES:
+    if any(_is_license_name(name) for name in ctx.root_files_lower):
         return []
     return [
         make_finding(
@@ -119,8 +144,9 @@ def check_license(ctx: ScanContext):
             ),
             path="LICENSE",
             evidence=(
-                "Checked the repository root for LICENSE, LICENSE.md or "
-                "LICENSE.txt (case-insensitive); none found."
+                "Checked the repository root for LICENSE, LICENSE.md/.txt, "
+                "LICENSE-<suffix>, COPYING*/UNLICENSE* files "
+                "(case-insensitive); none found."
             ),
             suggestion=(
                 "Add a LICENSE file with the license chosen by the "
@@ -183,7 +209,7 @@ def check_gitignore(ctx: ScanContext):
 
 
 def check_tests(ctx: ScanContext):
-    if ctx.root_dirs_lower & TEST_DIRS:
+    if ctx.root_dirs_lower & TEST_DIRS or ctx.has_src_test_dir:
         return []
     if ctx.root_files_lower & TEST_CONFIG_FILES:
         return []
@@ -202,12 +228,12 @@ def check_tests(ctx: ScanContext):
             ),
             path=None,
             evidence=(
-                "Checked for directories 'tests', 'test', 'e2e' or "
-                "'__tests__', Python files conftest.py, pytest.ini, "
-                "tox.ini, noxfile.py, JS/TS runner configs such as "
-                "playwright/vitest/jest/cypress configs, and root files "
-                "matching test_*.py, *_test.py, *.test.* or *.spec.*; "
-                "none found."
+                "Checked for directories 'tests', 'test', 'e2e', "
+                "'__tests__' or 'src/test', Python files conftest.py, "
+                "pytest.ini, tox.ini, noxfile.py, JS/TS runner configs "
+                "such as playwright/vitest/jest/cypress configs, and root "
+                "files matching test_*.py, *_test.py, *_test.go, *.test.* "
+                "or *.spec.*; none found."
             ),
             suggestion=(
                 "Add a tests/ directory with at least one runnable test "

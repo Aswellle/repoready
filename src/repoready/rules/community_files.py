@@ -13,15 +13,25 @@ from .context import ScanContext
 
 CONTRIBUTING_NAMES = frozenset({"contributing.md"})
 SECURITY_NAMES = frozenset({"security.md"})
-COC_NAMES = frozenset({"code_of_conduct.md"})
-CHANGELOG_NAMES = frozenset({"changelog.md"})
+COC_NAMES = frozenset({"code_of_conduct.md", "conduct.md"})
+CHANGELOG_NAMES = frozenset(
+    {
+        "changelog.md",
+        "history.md",
+        "changes.md",
+        "changes.rst",
+        "news.md",
+        "news.rst",
+        "releases.md",
+    }
+)
 # docs/releases.md is the documented alternative location.
 DOCS_RELEASE_NAMES = frozenset({"releases.md"})
 PR_TEMPLATE_NAMES = frozenset({"pull_request_template.md"})
 
 
 def check_contributing(ctx: ScanContext):
-    if ctx.root_files_lower & CONTRIBUTING_NAMES:
+    if (ctx.root_files_lower | ctx.github_files_lower) & CONTRIBUTING_NAMES:
         return []
     return [
         make_finding(
@@ -33,8 +43,8 @@ def check_contributing(ctx: ScanContext):
             ),
             path="CONTRIBUTING.md",
             evidence=(
-                "Checked the repository root for CONTRIBUTING.md "
-                "(case-insensitive); none found."
+                "Checked the repository root and .github/ for "
+                "CONTRIBUTING.md (case-insensitive); none found."
             ),
             suggestion=(
                 "Add a CONTRIBUTING.md describing how to set up the "
@@ -45,7 +55,7 @@ def check_contributing(ctx: ScanContext):
 
 
 def check_security(ctx: ScanContext):
-    if ctx.root_files_lower & SECURITY_NAMES:
+    if (ctx.root_files_lower | ctx.github_files_lower) & SECURITY_NAMES:
         return []
     return [
         make_finding(
@@ -57,7 +67,7 @@ def check_security(ctx: ScanContext):
             ),
             path="SECURITY.md",
             evidence=(
-                "Checked the repository root for SECURITY.md "
+                "Checked the repository root and .github/ for SECURITY.md "
                 "(case-insensitive); none found."
             ),
             suggestion=(
@@ -69,7 +79,7 @@ def check_security(ctx: ScanContext):
 
 
 def check_coc(ctx: ScanContext):
-    if ctx.root_files_lower & COC_NAMES:
+    if (ctx.root_files_lower | ctx.github_files_lower) & COC_NAMES:
         return []
     return [
         make_finding(
@@ -81,8 +91,9 @@ def check_coc(ctx: ScanContext):
             ),
             path="CODE_OF_CONDUCT.md",
             evidence=(
-                "Checked the repository root for CODE_OF_CONDUCT.md "
-                "(case-insensitive); none found."
+                "Checked the repository root and .github/ for "
+                "CODE_OF_CONDUCT.md or CONDUCT.md (case-insensitive); "
+                "none found."
             ),
             suggestion=(
                 "Add a CODE_OF_CONDUCT.md defining expected behaviour and "
@@ -102,12 +113,13 @@ def check_changelog(ctx: ScanContext):
             "repo.changelog.missing",
             title="CHANGELOG not found",
             detail=(
-                "No CHANGELOG.md or docs/releases.md was found; release "
-                "changes are not traceable."
+                "No changelog file was found; release changes are not "
+                "traceable."
             ),
             path="CHANGELOG.md",
             evidence=(
-                "Checked the repository root for CHANGELOG.md "
+                "Checked the repository root for CHANGELOG.md, HISTORY.md, "
+                "CHANGES.md/.rst, NEWS.md/.rst, RELEASES.md "
                 "(case-insensitive) and docs/releases.md; none found."
             ),
             suggestion=(

@@ -19,6 +19,7 @@ import tomllib
 from repoready.rules.registry import make_finding
 
 from .context import ScanContext
+from .community_files import CHANGELOG_NAMES, DOCS_RELEASE_NAMES
 from .markdown_text import (
     README_SIZE_LIMIT,
     iter_headings,
@@ -192,11 +193,16 @@ def check_packagejson_fields(ctx: ScanContext):
 
 
 def _changelog_path(ctx: ScanContext):
+    # Same frozen location set as repo.changelog.missing
+    # (community_files.CHANGELOG_NAMES); changelog.md keeps priority.
     for name in sorted(ctx.root_file_names):
         if name.lower() == "changelog.md":
             return ctx.root / name
+    for name in sorted(ctx.root_file_names):
+        if name.lower() in CHANGELOG_NAMES:
+            return ctx.root / name
     for entry in ctx.docs_entries:
-        if not entry.is_dir and entry.name.lower() == "releases.md":
+        if not entry.is_dir and entry.name.lower() in DOCS_RELEASE_NAMES:
             return ctx.root / "docs" / entry.name
     return None
 
