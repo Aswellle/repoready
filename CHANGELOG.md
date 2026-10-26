@@ -14,6 +14,10 @@
 - 测试信号扩展：根级 `*_test.go`（Go）与 `src/test/` 嵌套（Java/Maven）不再误报缺失（dogfood：cobra、junit5）。
 - Markdown 标题识别支持 setext 形式（`标题` + `===`/`---`），锚点校验额外认可 HTML `name`/`id` 属性——修复 ripgrep 类仓库的 `readme.no-h1` 与 `link.anchor.not-found` 误报、纯文本 setext 格式 CHANGELOG 的 `meta.changelog.current-entry` 误报。
 
+### Changed
+
+- README 按开源项目标准重写：规则全表（22 条 × 五类别）、退出码表、CLI 参数表、真实 JSON 输出示例、CI 接入指引与设计承诺；测试计数与 CI 矩阵同步为实际值。
+
 ### Added
 
 尚未有新的功能条目。
