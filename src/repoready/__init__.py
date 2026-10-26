@@ -5,4 +5,4 @@
 # re-verified immediately before publishing). See
 # docs/PROJECT_NAMING_AND_RELEASE.md.
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"

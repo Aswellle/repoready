@@ -70,12 +70,10 @@
 要求 Python 3.11+，零运行时依赖。
 
 ```bash
-pip install git+https://github.com/Aswellle/repoready
+pip install repoready
 ```
 
-从 git 直装已在干净虚拟环境中实测；PyPI 包后续另行发布，**发布前请勿假设 `pip install repoready` 可用**。
-
-开发方式安装：
+或从源码安装（跟踪最新提交）：
 
 ```bash
 git clone https://github.com/Aswellle/repoready
@@ -147,7 +145,7 @@ repoready check . --config repoready.toml
   with:
     python-version: "3.11"
 - name: Install repoready
-  run: pip install git+https://github.com/Aswellle/repoready
+  run: pip install repoready
 - name: Repository readiness check
   run: repoready check . --strict
 ```

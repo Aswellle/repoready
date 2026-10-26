@@ -1,7 +1,7 @@
 # RepoReady 可复制 CI 门禁示例。
 #
-# 安装方式：git 直装（无需 PyPI，已实测可用）。若 PyPI 包已发布，
-# 可把安装步骤换成 `pip install repoready`。
+# 安装方式：PyPI（pip install repoready）。若需跟踪未发布修复，
+# 可换成 git 直装 `pip install git+https://github.com/Aswellle/repoready`。
 # `--strict` 让 warning 也算失败（退出码 1），适合作为发布前门禁；
 # 首次接入的项目可以先去掉 --strict 观察基线。
 
@@ -20,6 +20,6 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install repoready
-        run: pip install git+https://github.com/Aswellle/repoready
+        run: pip install repoready
       - name: Repository readiness check
         run: repoready check . --strict
